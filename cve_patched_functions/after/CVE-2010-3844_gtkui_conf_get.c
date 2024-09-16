@@ -1,0 +1,12 @@
+short gtkui_conf_get(char *name) {
+   unsigned short c = 0;
+
+   DEBUG_MSG("gtkui_conf_get: name=%s", name);
+
+   for(c = 0; settings[c].name != NULL; c++) {
+      if(!strcmp(name, settings[c].name))
+          return(settings[c].value);
+   }
+
+   return(0);
+}

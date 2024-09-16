@@ -1,0 +1,9 @@
+_public_ int sd_bus_set_connected_signal(sd_bus *bus, int b) {
+        assert_return(bus, -EINVAL);
+        assert_return(bus = bus_resolve(bus), -ENOPKG);
+        assert_return(bus->state == BUS_UNSET, -EPERM);
+        assert_return(!bus_pid_changed(bus), -ECHILD);
+
+        bus->connected_signal = !!b;
+        return 0;
+}

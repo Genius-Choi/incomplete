@@ -1,0 +1,4 @@
+DNP3_UDP_Analyzer::DNP3_UDP_Analyzer(Connection* c)
+	: DNP3_Base(this), Analyzer("DNP3_UDP", c)
+	{
+	}

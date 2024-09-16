@@ -1,0 +1,25 @@
+f_histget(typval_T *argvars UNUSED, typval_T *rettv)
+{
+#ifdef FEAT_CMDHIST
+    int		type;
+    int		idx;
+    char_u	*str;
+
+    str = tv_get_string_chk(&argvars[0]);	/* NULL on type error */
+    if (str == NULL)
+	rettv->vval.v_string = NULL;
+    else
+    {
+	type = get_histtype(str);
+	if (argvars[1].v_type == VAR_UNKNOWN)
+	    idx = get_history_idx(type);
+	else
+	    idx = (int)tv_get_number_chk(&argvars[1], NULL);
+						    /* -1 on type error */
+	rettv->vval.v_string = vim_strsave(get_history_entry(type, idx));
+    }
+#else
+    rettv->vval.v_string = NULL;
+#endif
+    rettv->v_type = VAR_STRING;
+}

@@ -1,0 +1,17 @@
+VTermValueType vterm_get_attr_type(VTermAttr attr)
+{
+  switch(attr) {
+    case VTERM_ATTR_BOLD:       return VTERM_VALUETYPE_BOOL;
+    case VTERM_ATTR_UNDERLINE:  return VTERM_VALUETYPE_INT;
+    case VTERM_ATTR_ITALIC:     return VTERM_VALUETYPE_BOOL;
+    case VTERM_ATTR_BLINK:      return VTERM_VALUETYPE_BOOL;
+    case VTERM_ATTR_REVERSE:    return VTERM_VALUETYPE_BOOL;
+    case VTERM_ATTR_STRIKE:     return VTERM_VALUETYPE_BOOL;
+    case VTERM_ATTR_FONT:       return VTERM_VALUETYPE_INT;
+    case VTERM_ATTR_FOREGROUND: return VTERM_VALUETYPE_COLOR;
+    case VTERM_ATTR_BACKGROUND: return VTERM_VALUETYPE_COLOR;
+
+    case VTERM_N_ATTRS: return 0;
+  }
+  return 0; /* UNREACHABLE */
+}

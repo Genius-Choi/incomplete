@@ -1,0 +1,21 @@
+update_monitor_data_free (gpointer data)
+{
+  UpdateMonitorData *m = data;
+
+  g_mutex_clear (&m->lock);
+
+  g_free (m->sender);
+  g_free (m->obj_path);
+  g_object_unref (m->cancellable);
+
+  g_free (m->name);
+  g_free (m->arch);
+  g_free (m->branch);
+  g_free (m->commit);
+  g_free (m->app_path);
+
+  g_free (m->reported_local_commit);
+  g_free (m->reported_remote_commit);
+
+  g_free (m);
+}

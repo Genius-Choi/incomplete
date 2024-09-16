@@ -1,0 +1,21 @@
+vim9_declare_error(char_u *name)
+{
+    char *scope = "";
+
+    switch (*name)
+    {
+	case 'g': scope = _("global"); break;
+	case 'b': scope = _("buffer"); break;
+	case 'w': scope = _("window"); break;
+	case 't': scope = _("tab"); break;
+	case 'v': scope = "v:"; break;
+	case '$': semsg(_(e_cannot_declare_an_environment_variable), name);
+		  return;
+	case '&': semsg(_(e_cannot_declare_an_option), name);
+		  return;
+	case '@': semsg(_(e_cannot_declare_a_register_str), name);
+		  return;
+	default: return;
+    }
+    semsg(_(e_cannot_declare_a_scope_variable), scope, name);
+}

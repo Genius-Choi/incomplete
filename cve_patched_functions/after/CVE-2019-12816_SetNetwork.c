@@ -1,0 +1,1 @@
+void CModule::SetNetwork(CIRCNetwork* pNetwork) { m_pNetwork = pNetwork; }

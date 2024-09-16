@@ -1,0 +1,4 @@
+list_tab_vars(int *first)
+{
+    list_hashtable_vars(&curtab->tp_vars->dv_hashtab, "t:", TRUE, first);
+}

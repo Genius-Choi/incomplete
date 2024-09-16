@@ -1,0 +1,4 @@
+deleted_lines(linenr_T lnum, long count)
+{
+    changed_lines(lnum, 0, lnum + count, -count);
+}

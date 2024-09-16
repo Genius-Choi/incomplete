@@ -1,0 +1,34 @@
+_public_ int sd_bus_open_user_with_description(sd_bus **ret, const char *description) {
+        _cleanup_(bus_freep) sd_bus *b = NULL;
+        int r;
+
+        assert_return(ret, -EINVAL);
+
+        r = sd_bus_new(&b);
+        if (r < 0)
+                return r;
+
+        if (description) {
+                r = sd_bus_set_description(b, description);
+                if (r < 0)
+                        return r;
+        }
+
+        r = bus_set_address_user(b);
+        if (r < 0)
+                return r;
+
+        b->bus_client = true;
+        b->is_user = true;
+
+        /* We don't do any per-method access control on the user bus. */
+        b->trusted = true;
+        b->is_local = true;
+
+        r = sd_bus_start(b);
+        if (r < 0)
+                return r;
+
+        *ret = TAKE_PTR(b);
+        return 0;
+}

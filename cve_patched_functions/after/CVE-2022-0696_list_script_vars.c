@@ -1,0 +1,6 @@
+list_script_vars(int *first)
+{
+    if (SCRIPT_ID_VALID(current_sctx.sc_sid))
+	list_hashtable_vars(&SCRIPT_VARS(current_sctx.sc_sid),
+							   "s:", FALSE, first);
+}

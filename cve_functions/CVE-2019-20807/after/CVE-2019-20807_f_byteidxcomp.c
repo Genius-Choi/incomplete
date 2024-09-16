@@ -1,0 +1,4 @@
+f_byteidxcomp(typval_T *argvars, typval_T *rettv)
+{
+    byteidx(argvars, rettv, TRUE);
+}

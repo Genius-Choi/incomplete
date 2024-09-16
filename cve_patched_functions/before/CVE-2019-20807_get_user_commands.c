@@ -1,0 +1,9 @@
+get_user_commands(expand_T *xp UNUSED, int idx)
+{
+    if (idx < curbuf->b_ucmds.ga_len)
+	return USER_CMD_GA(&curbuf->b_ucmds, idx)->uc_name;
+    idx -= curbuf->b_ucmds.ga_len;
+    if (idx < ucmds.ga_len)
+	return USER_CMD(idx)->uc_name;
+    return NULL;
+}

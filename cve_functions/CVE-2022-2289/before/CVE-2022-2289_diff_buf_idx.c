@@ -1,0 +1,9 @@
+diff_buf_idx(buf_T *buf)
+{
+    int		idx;
+
+    for (idx = 0; idx < DB_COUNT; ++idx)
+	if (curtab->tp_diffbuf[idx] == buf)
+	    break;
+    return idx;
+}

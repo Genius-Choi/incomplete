@@ -1,0 +1,30 @@
+void CL_SetModel_f( void ) {
+	char	*arg;
+	char	name[256];
+
+	arg = Cmd_Argv( 1 );
+	if (arg[0])
+	{
+		/*
+		//If you wanted to be foolproof you would put this on the server I guess. But that
+		//tends to put things out of sync regarding cvar status. And I sort of doubt someone
+		//is going to write a client and figure out the protocol so that they can annoy people
+		//by changing models real fast.
+		int curTime = Com_Milliseconds();
+		if (gCLModelDelay > curTime)
+		{
+			Com_Printf("You can only change your model every %i seconds.\n", (MODEL_CHANGE_DELAY/1000));
+			return;
+		}
+
+		gCLModelDelay = curTime + MODEL_CHANGE_DELAY;
+		*/
+		//rwwFIXMEFIXME: This is currently broken and doesn't seem to work for connecting clients
+		Cvar_Set( "model", arg );
+	}
+	else
+	{
+		Cvar_VariableStringBuffer( "model", name, sizeof(name) );
+		Com_Printf("model is set to %s\n", name);
+	}
+}

@@ -1,0 +1,7 @@
+flatpak_dir_get_priority (FlatpakDir *self)
+{
+  if (self->extra_data != NULL)
+    return self->extra_data->priority;
+
+  return 0;
+}

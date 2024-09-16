@@ -1,0 +1,12 @@
+del_char(int fixpos)
+{
+    if (has_mbyte)
+    {
+	// Make sure the cursor is at the start of a character.
+	mb_adjust_cursor();
+	if (*ml_get_cursor() == NUL)
+	    return FAIL;
+	return del_chars(1L, fixpos);
+    }
+    return del_bytes(1L, fixpos, TRUE);
+}

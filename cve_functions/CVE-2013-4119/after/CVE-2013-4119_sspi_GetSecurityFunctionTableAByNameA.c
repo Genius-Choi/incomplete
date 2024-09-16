@@ -1,0 +1,17 @@
+SecurityFunctionTableA* sspi_GetSecurityFunctionTableAByNameA(const SEC_CHAR* Name)
+{
+	int index;
+	UINT32 cPackages;
+
+	cPackages = sizeof(SecPkgInfoA_LIST) / sizeof(*(SecPkgInfoA_LIST));
+
+	for (index = 0; index < (int) cPackages; index++)
+	{
+		if (strcmp(Name, SecurityFunctionTableA_NAME_LIST[index].Name) == 0)
+		{
+			return (SecurityFunctionTableA*) SecurityFunctionTableA_NAME_LIST[index].SecurityFunctionTable;
+		}
+	}
+
+	return NULL;
+}

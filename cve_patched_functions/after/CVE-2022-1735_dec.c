@@ -1,0 +1,41 @@
+dec(pos_T *lp)
+{
+    char_u	*p;
+
+    lp->coladd = 0;
+    if (lp->col == MAXCOL)
+    {
+	// past end of line
+	p = ml_get(lp->lnum);
+	lp->col = (colnr_T)STRLEN(p);
+	if (has_mbyte)
+	    lp->col -= (*mb_head_off)(p, p + lp->col);
+	return 0;
+    }
+
+    if (lp->col > 0)
+    {
+	// still within line
+	lp->col--;
+	if (has_mbyte)
+	{
+	    p = ml_get(lp->lnum);
+	    lp->col -= (*mb_head_off)(p, p + lp->col);
+	}
+	return 0;
+    }
+
+    if (lp->lnum > 1)
+    {
+	// there is a prior line
+	lp->lnum--;
+	p = ml_get(lp->lnum);
+	lp->col = (colnr_T)STRLEN(p);
+	if (has_mbyte)
+	    lp->col -= (*mb_head_off)(p, p + lp->col);
+	return 1;
+    }
+
+    // at start of file
+    return -1;
+}

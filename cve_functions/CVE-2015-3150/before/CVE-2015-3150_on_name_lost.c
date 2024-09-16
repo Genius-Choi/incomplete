@@ -1,0 +1,8 @@
+static void on_name_lost(GDBusConnection *connection,
+                      const gchar *name,
+                      gpointer user_data)
+{
+    g_print(_("The name '%s' has been lost, please check if other "
+              "service owning the name is not running.\n"), name);
+    exit(1);
+}

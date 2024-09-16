@@ -1,0 +1,23 @@
+DECLARE_INTERFACE_(my_ITaskbarList3, IUnknown) {
+	STDMETHOD (QueryInterface) (THIS_ REFIID riid, LPVOID *ppvObj) PURE;
+	STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+	STDMETHOD_(ULONG, Release) (THIS) PURE;
+	STDMETHOD (HrInit) (THIS) PURE;
+	STDMETHOD (AddTab) (THIS_ HWND hwnd) PURE;
+	STDMETHOD (DeleteTab) (THIS_ HWND hwnd) PURE;
+	STDMETHOD (ActivateTab) (THIS_ HWND hwnd) PURE;
+	STDMETHOD (SetActiveAlt) (THIS_ HWND hwnd) PURE;
+	STDMETHOD (MarkFullscreenWindow) (THIS_ HWND hwnd, int fFullscreen) PURE;
+	STDMETHOD (SetProgressValue) (THIS_ HWND hwnd, ULONGLONG ullCompleted, ULONGLONG ullTotal) PURE;
+	STDMETHOD (SetProgressState) (THIS_ HWND hwnd, TASKBAR_PROGRESS_FLAGS tbpFlags) PURE;
+	STDMETHOD (RegisterTab) (THIS_ HWND hwndTab,HWND hwndMDI) PURE;
+	STDMETHOD (UnregisterTab) (THIS_ HWND hwndTab) PURE;
+	STDMETHOD (SetTabOrder) (THIS_ HWND hwndTab, HWND hwndInsertBefore) PURE;
+	STDMETHOD (SetTabActive) (THIS_ HWND hwndTab, HWND hwndMDI, DWORD dwReserved) PURE;
+	STDMETHOD (ThumbBarAddButtons) (THIS_ HWND hwnd, UINT cButtons, MY_THUMBBUTTON* pButton) PURE;
+	STDMETHOD (ThumbBarUpdateButtons) (THIS_ HWND hwnd, UINT cButtons, MY_THUMBBUTTON* pButton) PURE;
+	STDMETHOD (ThumbBarSetImageList) (THIS_ HWND hwnd, HIMAGELIST himl) PURE;
+	STDMETHOD (SetOverlayIcon) (THIS_ HWND hwnd, HICON hIcon, LPCWSTR pszDescription) PURE;
+	STDMETHOD (SetThumbnailTooltip) (THIS_ HWND hwnd, LPCWSTR pszTip) PURE;
+	STDMETHOD (SetThumbnailClip) (THIS_ HWND hwnd, RECT *prcClip) PURE;
+};

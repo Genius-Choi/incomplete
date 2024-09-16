@@ -1,0 +1,6 @@
+pciecap_cfgwrite(struct pci_vdev *dev, int capoff, int offset,
+		 int bytes, uint32_t val)
+{
+	/* XXX don't write to the readonly parts */
+	CFGWRITE(dev, offset, val, bytes);
+}

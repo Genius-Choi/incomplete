@@ -1,0 +1,5 @@
+cached_summary_data_free (CachedSummaryData *data)
+{
+  g_free (data->filename);
+  g_free (data);
+}

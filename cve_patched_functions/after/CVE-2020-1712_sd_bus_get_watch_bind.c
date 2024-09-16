@@ -1,0 +1,7 @@
+_public_ int sd_bus_get_watch_bind(sd_bus *bus) {
+        assert_return(bus, -EINVAL);
+        assert_return(bus = bus_resolve(bus), -ENOPKG);
+        assert_return(!bus_pid_changed(bus), -ECHILD);
+
+        return bus->watch_bind;
+}

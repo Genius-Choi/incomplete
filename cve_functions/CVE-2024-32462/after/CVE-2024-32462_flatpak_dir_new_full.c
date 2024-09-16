@@ -1,0 +1,9 @@
+flatpak_dir_new_full (GFile *path, gboolean user, DirExtraData *extra_data)
+{
+  FlatpakDir *dir = g_object_new (FLATPAK_TYPE_DIR, "path", path, "user", user, NULL);
+
+  if (extra_data != NULL)
+    dir->extra_data = dir_extra_data_clone (extra_data);
+
+  return dir;
+}

@@ -1,0 +1,11 @@
+list_one_var(dictitem_T *v, char *prefix, int *first)
+{
+    char_u	*tofree;
+    char_u	*s;
+    char_u	numbuf[NUMBUFLEN];
+
+    s = echo_string(&v->di_tv, &tofree, numbuf, get_copyID());
+    list_one_var_a(prefix, v->di_key, v->di_tv.v_type,
+					 s == NULL ? (char_u *)"" : s, first);
+    vim_free(tofree);
+}

@@ -1,0 +1,14 @@
+remote_is_already_configured (FlatpakTransaction *self,
+                              const char         *url)
+{
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+  g_autofree char *old_remote = NULL;
+
+  old_remote = flatpak_dir_find_remote_by_uri (priv->dir, url);
+
+  /* Note: we don't check priv->extra_dependency_dirs because the transaction
+   * can only operate on one installation so any install/update ops need to
+   * have a remote there. */
+
+  return old_remote != NULL;
+}

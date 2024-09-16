@@ -1,0 +1,8 @@
+GF_Err gf_hinter_track_force_no_offsets(GF_RTPHinter *tkHinter)
+{
+	GF_Err e;
+	if (!tkHinter) return GF_BAD_PARAM;
+	e = gf_isom_rtp_set_time_offset(tkHinter->file, tkHinter->HintTrack, 1, 0);
+	if (e) return e;
+	return gf_isom_rtp_set_time_sequence_offset(tkHinter->file, tkHinter->HintTrack, 1, 0);
+}

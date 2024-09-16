@@ -1,0 +1,21 @@
+get_funccal(void)
+{
+    int		i;
+    funccall_T	*funccal;
+    funccall_T	*temp_funccal;
+
+    funccal = current_funccal;
+    if (debug_backtrace_level > 0)
+    {
+	for (i = 0; i < debug_backtrace_level; i++)
+	{
+	    temp_funccal = funccal->caller;
+	    if (temp_funccal)
+		funccal = temp_funccal;
+	    else
+		// backtrace level overflow. reset to max
+		debug_backtrace_level = i;
+	}
+    }
+    return funccal;
+}

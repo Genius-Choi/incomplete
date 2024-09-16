@@ -1,0 +1,7 @@
+void HeaderMapImpl::iterateReverse(ConstIterateCb cb, void* context) const {
+  for (auto it = headers_.rbegin(); it != headers_.rend(); it++) {
+    if (cb(*it, context) == HeaderMap::Iterate::Break) {
+      break;
+    }
+  }
+}

@@ -1,0 +1,4 @@
+f_test_settime(typval_T *argvars, typval_T *rettv UNUSED)
+{
+    time_for_testing = (time_t)tv_get_number(&argvars[0]);
+}

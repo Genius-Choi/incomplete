@@ -1,0 +1,4 @@
+utf_off2cells(unsigned off, unsigned max_off)
+{
+    return (off + 1 < max_off && ScreenLines[off + 1] == 0) ? 2 : 1;
+}

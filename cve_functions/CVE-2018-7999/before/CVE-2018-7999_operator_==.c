@@ -1,0 +1,1 @@
+        bool operator == (const _glat_iterator<W> & rhs) { return _v >= rhs._e - 1; }

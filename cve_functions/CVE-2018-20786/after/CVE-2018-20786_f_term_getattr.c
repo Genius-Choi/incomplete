@@ -1,0 +1,29 @@
+f_term_getattr(typval_T *argvars, typval_T *rettv)
+{
+    int	    attr;
+    size_t  i;
+    char_u  *name;
+
+    static struct {
+	char	    *name;
+	int	    attr;
+    } attrs[] = {
+	{"bold",      HL_BOLD},
+	{"italic",    HL_ITALIC},
+	{"underline", HL_UNDERLINE},
+	{"strike",    HL_STRIKETHROUGH},
+	{"reverse",   HL_INVERSE},
+    };
+
+    attr = tv_get_number(&argvars[0]);
+    name = tv_get_string_chk(&argvars[1]);
+    if (name == NULL)
+	return;
+
+    for (i = 0; i < sizeof(attrs)/sizeof(attrs[0]); ++i)
+	if (STRCMP(name, attrs[i].name) == 0)
+	{
+	    rettv->vval.v_number = (attr & attrs[i].attr) != 0 ? 1 : 0;
+	    break;
+	}
+}

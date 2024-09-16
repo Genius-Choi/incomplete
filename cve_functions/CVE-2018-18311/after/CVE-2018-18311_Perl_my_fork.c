@@ -1,0 +1,22 @@
+Perl_my_fork(void)
+{
+#if defined(HAS_FORK)
+    Pid_t pid;
+#if defined(USE_ITHREADS) && !defined(HAS_PTHREAD_ATFORK)
+    atfork_lock();
+    pid = fork();
+    atfork_unlock();
+#else
+    /* atfork_lock() and atfork_unlock() are installed as pthread_atfork()
+     * handlers elsewhere in the code */
+    pid = fork();
+#endif
+    return pid;
+#elif defined(__amigaos4__)
+    return amigaos_fork();
+#else
+    /* this "canna happen" since nothing should be calling here if !HAS_FORK */
+    Perl_croak_nocontext("fork() not available");
+    return 0;
+#endif /* HAS_FORK */
+}

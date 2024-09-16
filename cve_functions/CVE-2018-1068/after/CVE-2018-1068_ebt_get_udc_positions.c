@@ -1,0 +1,24 @@
+ebt_get_udc_positions(struct ebt_entry *e, struct ebt_table_info *newinfo,
+		      unsigned int *n, struct ebt_cl_stack *udc)
+{
+	int i;
+
+	/* we're only interested in chain starts */
+	if (e->bitmask)
+		return 0;
+	for (i = 0; i < NF_BR_NUMHOOKS; i++) {
+		if (newinfo->hook_entry[i] == (struct ebt_entries *)e)
+			break;
+	}
+	/* only care about udc */
+	if (i != NF_BR_NUMHOOKS)
+		return 0;
+
+	udc[*n].cs.chaininfo = (struct ebt_entries *)e;
+	/* these initialisations are depended on later in check_chainloops() */
+	udc[*n].cs.n = 0;
+	udc[*n].hookmask = 0;
+
+	(*n)++;
+	return 0;
+}

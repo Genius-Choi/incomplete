@@ -1,0 +1,10 @@
+utf_eat_space(int cc)
+{
+    return ((cc >= 0x2000 && cc <= 0x206F)	// General punctuations
+	 || (cc >= 0x2e00 && cc <= 0x2e7f)	// Supplemental punctuations
+	 || (cc >= 0x3000 && cc <= 0x303f)	// CJK symbols and punctuations
+	 || (cc >= 0xff01 && cc <= 0xff0f)	// Full width ASCII punctuations
+	 || (cc >= 0xff1a && cc <= 0xff20)	// ..
+	 || (cc >= 0xff3b && cc <= 0xff40)	// ..
+	 || (cc >= 0xff5b && cc <= 0xff65));	// ..
+}

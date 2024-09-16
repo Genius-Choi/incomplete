@@ -1,0 +1,4 @@
+bool CModules::OnServerCapResult(const CString& sCap, bool bSuccess) {
+    MODUNLOADCHK(OnServerCapResult(sCap, bSuccess));
+    return false;
+}

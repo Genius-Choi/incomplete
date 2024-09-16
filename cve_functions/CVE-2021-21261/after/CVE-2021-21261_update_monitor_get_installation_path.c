@@ -1,0 +1,12 @@
+update_monitor_get_installation_path (PortalFlatpakUpdateMonitor *monitor)
+{
+  UpdateMonitorData *m = update_monitor_get_data (monitor);
+  g_autoptr(GFile) app_path = NULL;
+
+  app_path = g_file_new_for_path (m->app_path);
+
+  /* The app path is always 6 level deep inside the installation dir,
+   * like $dir/app/org.the.app/x86_64/stable/$commit/files, so we find
+   * the installation by just going up 6 parents. */
+  return g_file_resolve_relative_path (app_path, "../../../../../..");
+}

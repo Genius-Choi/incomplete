@@ -1,0 +1,10 @@
+Region* MemoryManager::user_region_from_vaddr(Process& process, VirtualAddress vaddr)
+{
+    // FIXME: Use a binary search tree (maybe red/black?) or some other more appropriate data structure!
+    for (auto& region : process.m_regions) {
+        if (region.contains(vaddr))
+            return &region;
+    }
+    dbg() << process << " Couldn't find user region for " << vaddr;
+    return nullptr;
+}

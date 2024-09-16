@@ -1,0 +1,7 @@
+flatpak_transaction_set_disable_auto_pin  (FlatpakTransaction *self,
+                                           gboolean            disable_pin)
+{
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+
+  priv->disable_auto_pin = disable_pin;
+}

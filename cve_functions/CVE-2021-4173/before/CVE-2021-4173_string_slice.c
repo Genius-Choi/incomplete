@@ -1,0 +1,25 @@
+string_slice(char_u *str, varnumber_T first, varnumber_T last, int exclusive)
+{
+    long	start_byte, end_byte;
+    size_t	slen;
+
+    if (str == NULL)
+	return NULL;
+    slen = STRLEN(str);
+    start_byte = char_idx2byte(str, slen, first);
+    if (start_byte < 0)
+	start_byte = 0; // first index very negative: use zero
+    if ((last == -1 && !exclusive) || last == VARNUM_MAX)
+	end_byte = (long)slen;
+    else
+    {
+	end_byte = char_idx2byte(str, slen, last);
+	if (!exclusive && end_byte >= 0 && end_byte < (long)slen)
+	    // end index is inclusive
+	    end_byte += mb_ptr2len(str + end_byte);
+    }
+
+    if (start_byte >= (long)slen || end_byte <= start_byte)
+	return NULL;
+    return vim_strnsave(str + start_byte, end_byte - start_byte);
+}

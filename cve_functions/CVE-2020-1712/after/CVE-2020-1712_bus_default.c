@@ -1,0 +1,26 @@
+static int bus_default(int (*bus_open)(sd_bus **), sd_bus **default_bus, sd_bus **ret) {
+        sd_bus *b = NULL;
+        int r;
+
+        assert(bus_open);
+        assert(default_bus);
+
+        if (!ret)
+                return !!*default_bus;
+
+        if (*default_bus) {
+                *ret = sd_bus_ref(*default_bus);
+                return 0;
+        }
+
+        r = bus_open(&b);
+        if (r < 0)
+                return r;
+
+        b->default_bus_ptr = default_bus;
+        b->tid = gettid();
+        *default_bus = b;
+
+        *ret = b;
+        return 1;
+}

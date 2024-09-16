@@ -1,0 +1,21 @@
+fail_multiple_refs (GError    **error,
+                    const char *name,
+                    GPtrArray  *refs)
+{
+  g_autoptr(GString) err = g_string_new ("");
+
+  g_string_printf (err, _("Multiple branches available for %s, you must specify one of: "), name);
+  g_ptr_array_sort (refs, flatpak_strcmp0_ptr);
+
+  for (int i = 0; i < refs->len; i++)
+    {
+      FlatpakDecomposed *ref = g_ptr_array_index (refs, i);
+      if (i != 0)
+        g_string_append (err, ", ");
+
+      g_string_append (err, flatpak_decomposed_get_pref (ref));
+    }
+  flatpak_fail (error, "%s", err->str);
+
+  return NULL;
+}

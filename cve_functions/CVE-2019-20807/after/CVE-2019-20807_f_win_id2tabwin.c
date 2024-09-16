@@ -1,0 +1,5 @@
+f_win_id2tabwin(typval_T *argvars, typval_T *rettv)
+{
+    if (rettv_list_alloc(rettv) != FAIL)
+	win_id2tabwin(argvars, rettv->vval.v_list);
+}

@@ -1,0 +1,21 @@
+bool CModules::FindModPath(const CString& sModule, CString& sModPath,
+                           CString& sDataPath) {
+    CString sMod = sModule;
+    CString sDir = sMod;
+    if (!sModule.Contains(".")) sMod += ".so";
+
+    ModDirList dirs = GetModDirs();
+
+    while (!dirs.empty()) {
+        sModPath = dirs.front().first + sMod;
+        sDataPath = dirs.front().second;
+        dirs.pop();
+
+        if (CFile::Exists(sModPath)) {
+            sDataPath += sDir;
+            return true;
+        }
+    }
+
+    return false;
+}

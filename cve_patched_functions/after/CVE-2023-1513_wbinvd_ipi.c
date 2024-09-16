@@ -1,0 +1,4 @@
+static void wbinvd_ipi(void *garbage)
+{
+	wbinvd();
+}

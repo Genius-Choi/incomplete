@@ -1,0 +1,8 @@
+static void setup_temp_free(vorb *f, void *p, int sz)
+{
+   if (f->alloc.alloc_buffer) {
+      f->temp_offset += (sz+3)&~3;
+      return;
+   }
+   free(p);
+}

@@ -1,0 +1,43 @@
+flatpak_numbers_prompt (gboolean default_yes, int min, int max, const char *prompt, ...)
+{
+  char buf[512];
+  va_list var_args;
+  g_autofree char *s = NULL;
+  g_autofree int *choice = g_new0 (int, 2);
+  int *numbers;
+
+  va_start (var_args, prompt);
+  s = g_strdup_vprintf (prompt, var_args);
+  va_end (var_args);
+
+  while (TRUE)
+    {
+      g_print ("%s [%d-%d]: ", s, min, max);
+
+      if (!isatty (STDIN_FILENO) || !isatty (STDOUT_FILENO))
+        {
+          g_print ("0\n");
+          choice[0] = 0;
+          return g_steal_pointer (&choice);
+        }
+
+      if (fgets (buf, sizeof (buf), stdin) == NULL)
+        {
+          choice[0] = 0;
+          return g_steal_pointer (&choice);
+        }
+
+      g_strstrip (buf);
+
+      if (default_yes && strlen (buf) == 0 &&
+          max - min == 1 && min == 0)
+        {
+          choice[0] = 0;
+          return g_steal_pointer (&choice);
+        }
+
+      numbers = flatpak_parse_numbers (buf, min, max);
+      if (numbers)
+        return numbers;
+    }
+}

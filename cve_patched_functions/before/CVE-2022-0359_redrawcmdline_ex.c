@@ -1,0 +1,10 @@
+redrawcmdline_ex(int do_compute_cmdrow)
+{
+    if (cmd_silent)
+	return;
+    need_wait_return = FALSE;
+    if (do_compute_cmdrow)
+	compute_cmdrow();
+    redrawcmd();
+    cursorcmd();
+}

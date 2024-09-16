@@ -1,0 +1,7 @@
+cell2cellattr(const VTermScreenCell *cell, cellattr_T *attr)
+{
+    attr->width = cell->width;
+    attr->attrs = cell->attrs;
+    attr->fg = cell->fg;
+    attr->bg = cell->bg;
+}

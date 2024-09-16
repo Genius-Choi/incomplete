@@ -1,0 +1,7 @@
+bool CModules::OnChanPermission(const CNick& OpNick, const CNick& Nick,
+                                CChan& Channel, unsigned char uMode,
+                                bool bAdded, bool bNoChange) {
+    MODUNLOADCHK(
+        OnChanPermission(OpNick, Nick, Channel, uMode, bAdded, bNoChange));
+    return false;
+}

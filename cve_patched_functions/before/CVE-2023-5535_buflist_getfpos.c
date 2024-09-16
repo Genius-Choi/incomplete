@@ -1,0 +1,19 @@
+buflist_getfpos(void)
+{
+    pos_T	*fpos;
+
+    fpos = buflist_findfpos(curbuf);
+
+    curwin->w_cursor.lnum = fpos->lnum;
+    check_cursor_lnum();
+
+    if (p_sol)
+	curwin->w_cursor.col = 0;
+    else
+    {
+	curwin->w_cursor.col = fpos->col;
+	check_cursor_col();
+	curwin->w_cursor.coladd = 0;
+	curwin->w_set_curswant = TRUE;
+    }
+}

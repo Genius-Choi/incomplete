@@ -1,0 +1,1 @@
+bool CUser::DenyLoadMod() const { return m_bDenyLoadMod; }

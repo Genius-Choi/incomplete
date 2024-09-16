@@ -1,0 +1,29 @@
+flatpak_dir_make_current_ref (FlatpakDir        *self,
+                              FlatpakDecomposed *ref,
+                              GCancellable      *cancellable,
+                              GError           **error)
+{
+  g_autoptr(GFile) base = NULL;
+  g_autoptr(GFile) dir = NULL;
+  g_autoptr(GFile) current_link = NULL;
+  g_autofree char *id = NULL;
+  const char *rest;
+
+  if (!flatpak_decomposed_is_app (ref))
+    return flatpak_fail (error, _("Only applications can be made current"));
+
+  base = g_file_get_child (flatpak_dir_get_path (self), flatpak_decomposed_get_kind_str (ref));
+
+  id = flatpak_decomposed_dup_id (ref);
+  dir = g_file_get_child (base, id);
+
+  current_link = g_file_get_child (dir, "current");
+
+  g_file_delete (current_link, cancellable, NULL);
+
+  rest = flatpak_decomposed_peek_arch (ref, NULL);
+  if (!g_file_make_symbolic_link (current_link, rest, cancellable, error))
+    return FALSE;
+
+  return TRUE;
+}

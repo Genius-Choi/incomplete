@@ -1,0 +1,5 @@
+void CUser::SetPass(const CString& s, eHashType eHash, const CString& sSalt) {
+    m_sPass = s;
+    m_eHashType = eHash;
+    m_sPassSalt = sSalt;
+}

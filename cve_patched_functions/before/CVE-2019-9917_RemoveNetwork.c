@@ -1,0 +1,6 @@
+void CUser::RemoveNetwork(CIRCNetwork* pNetwork) {
+    auto it = std::find(m_vIRCNetworks.begin(), m_vIRCNetworks.end(), pNetwork);
+    if (it != m_vIRCNetworks.end()) {
+        m_vIRCNetworks.erase(it);
+    }
+}

@@ -1,0 +1,25 @@
+set_options_default(
+    int		opt_flags)	// OPT_FREE, OPT_LOCAL and/or OPT_GLOBAL
+{
+    int		i;
+    win_T	*wp;
+    tabpage_T	*tp;
+
+    for (i = 0; !istermoption_idx(i); i++)
+	if (!(options[i].flags & P_NODEFAULT)
+		&& (opt_flags == 0
+		    || (options[i].var != (char_u *)&p_enc
+# if defined(FEAT_CRYPT)
+			&& options[i].var != (char_u *)&p_cm
+			&& options[i].var != (char_u *)&p_key
+# endif
+			)))
+	    set_option_default(i, opt_flags, p_cp);
+
+    // The 'scroll' option must be computed for all windows.
+    FOR_ALL_TAB_WINDOWS(tp, wp)
+	win_comp_scroll(wp);
+#ifdef FEAT_CINDENT
+    parse_cino(curbuf);
+#endif
+}

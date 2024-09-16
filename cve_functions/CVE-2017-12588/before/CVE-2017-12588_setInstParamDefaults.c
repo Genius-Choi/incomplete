@@ -1,0 +1,24 @@
+setInstParamDefaults(instanceData* pData) {
+    pData->description     = NULL;
+    pData->socket          = NULL;
+    pData->tplName         = NULL;
+    pData->type            = ZMQ_PUB;
+    pData->action          = ACTION_BIND;
+    pData->sndHWM          = -1;
+    pData->rcvHWM          = -1;
+    pData->identity        = NULL;
+    pData->sndBuf          = -1;
+    pData->rcvBuf          = -1;
+    pData->linger          = -1;
+    pData->backlog         = -1;
+    pData->sndTimeout      = -1;
+    pData->rcvTimeout      = -1;
+    pData->maxMsgSize      = -1;
+    pData->rate            = -1;
+    pData->recoveryIVL     = -1;
+    pData->multicastHops   = -1;
+    pData->reconnectIVL    = -1;
+    pData->reconnectIVLMax = -1;
+    pData->ipv4Only        = -1;
+    pData->affinity        =  1;
+}

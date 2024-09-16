@@ -1,0 +1,1 @@
+  int input2() { return input2_; }

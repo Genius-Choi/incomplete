@@ -1,0 +1,5 @@
+void MemoryManager::register_vmobject(VMObject& vmobject)
+{
+    InterruptDisabler disabler;
+    m_vmobjects.append(&vmobject);
+}

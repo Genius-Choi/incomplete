@@ -1,0 +1,7 @@
+static int fpu_emulate(u16 code, struct sh_fpu_soft_struct *fregs, struct pt_regs *regs)
+{
+	if ((code & 0xf000) == 0xf000)
+		return id_fnmx(fregs, regs, code);
+	else
+		return id_sys(fregs, regs, code);
+}

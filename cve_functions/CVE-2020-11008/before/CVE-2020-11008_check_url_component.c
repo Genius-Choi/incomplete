@@ -1,0 +1,13 @@
+static int check_url_component(const char *url, int quiet,
+			       const char *name, const char *value)
+{
+	if (!value)
+		return 0;
+	if (!strchr(value, '\n'))
+		return 0;
+
+	if (!quiet)
+		warning(_("url contains a newline in its %s component: %s"),
+			name, url);
+	return -1;
+}

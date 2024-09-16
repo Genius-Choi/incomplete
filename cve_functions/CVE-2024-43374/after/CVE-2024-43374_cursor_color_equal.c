@@ -1,0 +1,6 @@
+cursor_color_equal(char_u *lhs_color, char_u *rhs_color)
+{
+    if (lhs_color != NULL && rhs_color != NULL)
+	return STRCMP(lhs_color, rhs_color) == 0;
+    return lhs_color == NULL && rhs_color == NULL;
+}

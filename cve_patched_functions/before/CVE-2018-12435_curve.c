@@ -1,0 +1,1 @@
+      const CurveGFp& curve() const { return m_curve; }

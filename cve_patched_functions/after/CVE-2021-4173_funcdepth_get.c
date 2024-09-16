@@ -1,0 +1,4 @@
+funcdepth_get(void)
+{
+    return funcdepth;
+}

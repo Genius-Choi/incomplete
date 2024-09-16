@@ -1,0 +1,4 @@
+prepare_viminfo_registers(void)
+{
+     y_read_regs = ALLOC_CLEAR_MULT(yankreg_T, NUM_REGISTERS);
+}

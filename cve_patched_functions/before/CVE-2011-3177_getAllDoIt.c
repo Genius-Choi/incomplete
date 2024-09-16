@@ -1,0 +1,32 @@
+YCPMap IniSection::getAllDoIt ()
+{
+    YCPMap m = IniBase::getAllDoIt ();
+
+    m->add (YCPString ("kind"), YCPString ("section"));
+    m->add (YCPString ("file"), YCPInteger (rewrite_by));
+
+    YCPList v;
+    IniIterator
+	ci = getContainerBegin (),
+	ce = getContainerEnd ();
+
+    for (;ci != ce; ++ci)
+    {
+	// the method is virtual,
+	// but the container does not exploit the polymorphism
+	YCPMap vm;
+	IniType t = ci->t ();
+	if (t == VALUE)
+	{
+	    vm = ci->e ().getAllDoIt ();
+	}
+	else //if (t == SECTION)
+	{
+	    vm = ci->s ().getAllDoIt ();
+	}
+	v->add (vm);
+    }
+
+    m->add (YCPString ("value"), v);
+    return m;
+}

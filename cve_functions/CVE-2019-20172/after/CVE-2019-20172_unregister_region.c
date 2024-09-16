@@ -1,0 +1,8 @@
+void MemoryManager::unregister_region(Region& region)
+{
+    InterruptDisabler disabler;
+    if (region.vaddr().get() >= 0xc0000000)
+        m_kernel_regions.remove(&region);
+    else
+        m_user_regions.remove(&region);
+}

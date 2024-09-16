@@ -1,0 +1,4 @@
+void *vterm_screen_get_unrecognised_fbdata(VTermScreen *screen)
+{
+  return vterm_state_get_unrecognised_fbdata(screen->state);
+}

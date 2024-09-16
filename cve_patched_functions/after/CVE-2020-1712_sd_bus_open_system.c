@@ -1,0 +1,3 @@
+_public_ int sd_bus_open_system(sd_bus **ret) {
+        return sd_bus_open_system_with_description(ret, NULL);
+}

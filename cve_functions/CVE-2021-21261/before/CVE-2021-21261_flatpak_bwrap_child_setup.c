@@ -1,0 +1,27 @@
+flatpak_bwrap_child_setup (GArray *fd_array,
+                           gboolean close_fd_workaround)
+{
+  int i;
+
+  if (close_fd_workaround)
+    flatpak_close_fds_workaround (3);
+
+  /* If no fd_array was specified, don't care. */
+  if (fd_array == NULL)
+    return;
+
+  /* Otherwise, mark not - close-on-exec all the fds in the array */
+  for (i = 0; i < fd_array->len; i++)
+    {
+      int fd = g_array_index (fd_array, int, i);
+
+      /* We also seek all fds to the start, because this lets
+         us use the same fd_array multiple times */
+      if (lseek (fd, 0, SEEK_SET) < 0)
+        {
+          /* Ignore the error, this happens on e.g. pipe fds */
+        }
+
+      fcntl (fd, F_SETFD, 0);
+    }
+}

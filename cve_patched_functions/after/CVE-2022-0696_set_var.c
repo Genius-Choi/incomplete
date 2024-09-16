@@ -1,0 +1,7 @@
+set_var(
+    char_u	*name,
+    typval_T	*tv,
+    int		copy)	    // make copy of value in "tv"
+{
+    set_var_const(name, 0, NULL, tv, copy, ASSIGN_DECL, 0);
+}

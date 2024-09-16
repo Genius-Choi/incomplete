@@ -1,0 +1,10 @@
+flatpak_fancy_output (void)
+{
+  if (fancy_output != -1)
+    return fancy_output;
+
+  if (g_strcmp0 (g_getenv ("FLATPAK_FANCY_OUTPUT"), "0") == 0)
+    return FALSE;
+
+  return isatty (STDOUT_FILENO);
+}

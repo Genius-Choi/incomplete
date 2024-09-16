@@ -1,0 +1,14 @@
+win_hasvertsplit(void)
+{
+    frame_T	*fr;
+
+    if (topframe->fr_layout == FR_ROW)
+	return TRUE;
+
+    if (topframe->fr_layout == FR_COL)
+	FOR_ALL_FRAMES(fr, topframe->fr_child)
+	    if (fr->fr_layout == FR_ROW)
+		return TRUE;
+
+    return FALSE;
+}

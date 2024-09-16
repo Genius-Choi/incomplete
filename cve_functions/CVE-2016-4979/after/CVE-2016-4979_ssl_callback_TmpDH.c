@@ -1,0 +1,42 @@
+DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
+{
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
+    EVP_PKEY *pkey;
+    int type;
+
+#ifdef SSL_CERT_SET_SERVER
+    /*
+     * When multiple certs/keys are configured for the SSL_CTX: make sure
+     * that we get the private key which is indeed used for the current
+     * SSL connection (available in OpenSSL 1.0.2 or later only)
+     */
+    SSL_set_current_cert(ssl, SSL_CERT_SET_SERVER);
+#endif
+    pkey = SSL_get_privatekey(ssl);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    type = pkey ? EVP_PKEY_type(pkey->type) : EVP_PKEY_NONE;
+#else
+    type = pkey ? EVP_PKEY_base_id(pkey) : EVP_PKEY_NONE;
+#endif
+
+    /*
+     * OpenSSL will call us with either keylen == 512 or keylen == 1024
+     * (see the definition of SSL_EXPORT_PKEYLENGTH in ssl_locl.h).
+     * Adjust the DH parameter length according to the size of the
+     * RSA/DSA private key used for the current connection, and always
+     * use at least 1024-bit parameters.
+     * Note: This may cause interoperability issues with implementations
+     * which limit their DH support to 1024 bit - e.g. Java 7 and earlier.
+     * In this case, SSLCertificateFile can be used to specify fixed
+     * 1024-bit DH parameters (with the effect that OpenSSL skips this
+     * callback).
+     */
+    if ((type == EVP_PKEY_RSA) || (type == EVP_PKEY_DSA)) {
+        keylen = EVP_PKEY_bits(pkey);
+    }
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                  "handing out built-in DH parameters for %d-bit authenticated connection", keylen);
+
+    return modssl_get_dh_params(keylen);
+}

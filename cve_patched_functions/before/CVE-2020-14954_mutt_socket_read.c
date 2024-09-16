@@ -1,0 +1,4 @@
+int mutt_socket_read(struct Connection *conn, char *buf, size_t len)
+{
+  return conn->read(conn, buf, len);
+}

@@ -1,0 +1,4 @@
+f_systemlist(typval_T *argvars, typval_T *rettv)
+{
+    get_cmd_output_as_rettv(argvars, rettv, TRUE);
+}

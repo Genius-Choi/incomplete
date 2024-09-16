@@ -1,0 +1,10 @@
+get_command_name(expand_T *xp UNUSED, int idx)
+{
+    if (idx >= (int)CMD_SIZE)
+# ifdef FEAT_USR_CMDS
+	return get_user_command_name(idx);
+# else
+	return NULL;
+# endif
+    return cmdnames[idx].cmd_name;
+}

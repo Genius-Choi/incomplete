@@ -1,0 +1,18 @@
+ex_pedit(exarg_T *eap)
+{
+    win_T	*curwin_save = curwin;
+
+    g_do_tagpreview = p_pvh;
+    prepare_tagpreview(TRUE);
+    keep_help_flag = bt_help(curwin_save->w_buffer);
+    do_exedit(eap, NULL);
+    keep_help_flag = FALSE;
+    if (curwin != curwin_save && win_valid(curwin_save))
+    {
+	/* Return cursor to where we were */
+	validate_cursor();
+	redraw_later(VALID);
+	win_enter(curwin_save, TRUE);
+    }
+    g_do_tagpreview = 0;
+}

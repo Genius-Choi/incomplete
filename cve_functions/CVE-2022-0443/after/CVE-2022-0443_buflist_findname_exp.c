@@ -1,0 +1,20 @@
+buflist_findname_exp(char_u *fname)
+{
+    char_u	*ffname;
+    buf_T	*buf = NULL;
+
+    // First make the name into a full path name
+    ffname = FullName_save(fname,
+#ifdef UNIX
+	    TRUE	    // force expansion, get rid of symbolic links
+#else
+	    FALSE
+#endif
+	    );
+    if (ffname != NULL)
+    {
+	buf = buflist_findname(ffname);
+	vim_free(ffname);
+    }
+    return buf;
+}

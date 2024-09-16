@@ -1,0 +1,7 @@
+flatpak_transaction_set_disable_prune (FlatpakTransaction *self,
+                                       gboolean            disable_prune)
+{
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+
+  priv->disable_prune = disable_prune;
+}

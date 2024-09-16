@@ -1,0 +1,3 @@
+bool CModules::OnChanTextMessage(CTextMessage& Message) {
+    MODHALTCHK(OnChanTextMessage(Message));
+}

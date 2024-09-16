@@ -1,0 +1,20 @@
+_flatpak_dir_remote_clear_cached_summary (FlatpakDir   *self,
+                                          const char   *remote,
+                                          const char   *extension,
+                                          GCancellable *cancellable,
+                                          GError      **error)
+{
+  g_autoptr(GFile) cache_dir = flatpak_build_file (self->cache_dir, "summaries", NULL);
+  g_autofree char *filename = g_strconcat (remote, extension, NULL);
+  g_autoptr(GFile) file = flatpak_build_file (cache_dir, filename, NULL);
+  g_autoptr(GError) local_error = NULL;
+
+  if (!g_file_delete (file, NULL, &local_error) &&
+      !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+    {
+      g_propagate_error (error, g_steal_pointer (&local_error));
+      return FALSE;
+    }
+
+  return TRUE;
+}

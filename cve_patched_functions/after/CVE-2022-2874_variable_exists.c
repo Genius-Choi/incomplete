@@ -1,0 +1,8 @@
+variable_exists(char_u *name, size_t len, cctx_T *cctx)
+{
+    return (cctx != NULL
+		&& (lookup_local(name, len, NULL, cctx) == OK
+		    || arg_exists(name, len, NULL, NULL, NULL, cctx) == OK))
+	    || script_var_exists(name, len, cctx, NULL) == OK
+	    || find_imported(name, len, FALSE) != NULL;
+}

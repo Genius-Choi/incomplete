@@ -1,0 +1,1 @@
+void CIRCSock::PauseCap() { ++m_uCapPaused; }

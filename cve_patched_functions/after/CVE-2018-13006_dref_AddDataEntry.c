@@ -1,0 +1,13 @@
+GF_Err dref_AddDataEntry(GF_Box *ptr, GF_Box *entry)
+{
+	if (entry->type==GF_ISOM_BOX_TYPE_ALIS) {
+		GF_DataEntryURLBox *urle = (GF_DataEntryURLBox *) gf_isom_box_new(GF_ISOM_BOX_TYPE_URL);
+		urle->flags = 1;
+		gf_isom_box_del(entry);
+		gf_isom_box_add_default(ptr, (GF_Box *)urle);
+		GF_LOG(GF_LOG_INFO, GF_LOG_CONTAINER, ("[iso file] Apple \'alis\' box found, not supported - converting to self-pointing \'url \' \n" ));
+	} else {
+		return gf_isom_box_add_default(ptr, entry);
+	}
+	return GF_OK;
+}

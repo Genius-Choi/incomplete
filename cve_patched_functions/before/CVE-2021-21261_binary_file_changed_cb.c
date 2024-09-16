@@ -1,0 +1,16 @@
+binary_file_changed_cb (GFileMonitor     *file_monitor,
+                        GFile            *file,
+                        GFile            *other_file,
+                        GFileMonitorEvent event_type,
+                        gpointer          data)
+{
+  static gboolean got_it = FALSE;
+
+  if (!got_it)
+    {
+      g_debug ("binary file changed");
+      unref_skeleton_in_timeout ();
+    }
+
+  got_it = TRUE;
+}

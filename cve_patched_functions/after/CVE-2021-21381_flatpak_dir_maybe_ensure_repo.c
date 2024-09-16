@@ -1,0 +1,6 @@
+flatpak_dir_maybe_ensure_repo (FlatpakDir   *self,
+                               GCancellable *cancellable,
+                               GError      **error)
+{
+  return _flatpak_dir_ensure_repo (self, TRUE, cancellable, error);
+}

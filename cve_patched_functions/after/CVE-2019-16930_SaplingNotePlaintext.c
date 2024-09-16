@@ -1,0 +1,7 @@
+SaplingNotePlaintext::SaplingNotePlaintext(
+    const SaplingNote& note,
+    std::array<unsigned char, ZC_MEMO_SIZE> memo) : BaseNotePlaintext(note, memo)
+{
+    d = note.d;
+    rcm = note.r;
+}

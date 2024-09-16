@@ -1,0 +1,15 @@
+check_cursor_lnum(void)
+{
+    if (curwin->w_cursor.lnum > curbuf->b_ml.ml_line_count)
+    {
+#ifdef FEAT_FOLDING
+	// If there is a closed fold at the end of the file, put the cursor in
+	// its first line.  Otherwise in the last line.
+	if (!hasFolding(curbuf->b_ml.ml_line_count,
+						&curwin->w_cursor.lnum, NULL))
+#endif
+	    curwin->w_cursor.lnum = curbuf->b_ml.ml_line_count;
+    }
+    if (curwin->w_cursor.lnum <= 0)
+	curwin->w_cursor.lnum = 1;
+}

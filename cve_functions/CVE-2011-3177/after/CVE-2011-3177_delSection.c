@@ -1,0 +1,39 @@
+int IniSection::delSection(const YCPPath&p, int depth)
+{
+    string k = ip->changeCase (p->component_str (depth));
+
+    // Find the matching sections.
+    // If we need to recurse, choose one
+    // Otherwise kill them all
+
+    pair <IniSectionIdxIterator, IniSectionIdxIterator> r =
+	isections.equal_range (k);
+    IniSectionIdxIterator xi = r.first, xe = r.second;
+
+    if (depth + 1 < p->length())
+    {
+	// recurse
+	if (xi != xe)
+	{
+	    // there's something
+	    IniSection& s = (--xe)->second->s ();
+	    return s.delSection (p, depth+1);
+	}
+	//error
+	y2error ("Delete: Invalid path %s [%d]", p->toString().c_str(), depth);
+	return -1;
+    }
+    else
+    {
+	// bottom level, massacre begins
+	if (xi == xe)
+	{
+	    y2debug ("Can not delete %s. Key does not exist.", p->toString().c_str());
+	}
+	while (xi != xe)
+	{
+	    delSection1 (xi++);
+	}
+    }
+    return 0;
+}

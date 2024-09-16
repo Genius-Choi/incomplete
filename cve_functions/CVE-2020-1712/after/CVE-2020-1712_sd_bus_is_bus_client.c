@@ -1,0 +1,7 @@
+_public_ int sd_bus_is_bus_client(sd_bus *bus) {
+        assert_return(bus, -EINVAL);
+        assert_return(bus = bus_resolve(bus), -ENOPKG);
+        assert_return(!bus_pid_changed(bus), -ECHILD);
+
+        return bus->bus_client;
+}

@@ -1,0 +1,36 @@
+f_inputdialog(typval_T *argvars, typval_T *rettv)
+{
+#if defined(FEAT_GUI_TEXTDIALOG)
+    /* Use a GUI dialog if the GUI is running and 'c' is not in 'guioptions' */
+    if (gui.in_use && vim_strchr(p_go, GO_CONDIALOG) == NULL)
+    {
+	char_u	*message;
+	char_u	buf[NUMBUFLEN];
+	char_u	*defstr = (char_u *)"";
+
+	message = tv_get_string_chk(&argvars[0]);
+	if (argvars[1].v_type != VAR_UNKNOWN
+		&& (defstr = tv_get_string_buf_chk(&argvars[1], buf)) != NULL)
+	    vim_strncpy(IObuff, defstr, IOSIZE - 1);
+	else
+	    IObuff[0] = NUL;
+	if (message != NULL && defstr != NULL
+		&& do_dialog(VIM_QUESTION, NULL, message,
+			  (char_u *)_("&OK\n&Cancel"), 1, IObuff, FALSE) == 1)
+	    rettv->vval.v_string = vim_strsave(IObuff);
+	else
+	{
+	    if (message != NULL && defstr != NULL
+					&& argvars[1].v_type != VAR_UNKNOWN
+					&& argvars[2].v_type != VAR_UNKNOWN)
+		rettv->vval.v_string = vim_strsave(
+				      tv_get_string_buf(&argvars[2], buf));
+	    else
+		rettv->vval.v_string = NULL;
+	}
+	rettv->v_type = VAR_STRING;
+    }
+    else
+#endif
+	get_user_input(argvars, rettv, TRUE, inputsecret_flag);
+}

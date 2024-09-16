@@ -1,0 +1,8 @@
+static void bus_detach_inotify_event(sd_bus *bus) {
+        assert(bus);
+
+        if (bus->inotify_event_source) {
+                sd_event_source_set_enabled(bus->inotify_event_source, SD_EVENT_OFF);
+                bus->inotify_event_source = sd_event_source_unref(bus->inotify_event_source);
+        }
+}

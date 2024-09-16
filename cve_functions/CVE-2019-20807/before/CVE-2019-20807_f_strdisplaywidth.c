@@ -1,0 +1,10 @@
+f_strdisplaywidth(typval_T *argvars, typval_T *rettv)
+{
+    char_u	*s = tv_get_string(&argvars[0]);
+    int		col = 0;
+
+    if (argvars[1].v_type != VAR_UNKNOWN)
+	col = (int)tv_get_number(&argvars[1]);
+
+    rettv->vval.v_number = (varnumber_T)(linetabsize_col(col, s) - col);
+}

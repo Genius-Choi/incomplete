@@ -1,0 +1,5 @@
+void fastd_receive_unknown_free(void) {
+	size_t i;
+	for (i = 0; i < UNKNOWN_TABLES; i++)
+		free(ctx.unknown_handshakes[i]);
+}

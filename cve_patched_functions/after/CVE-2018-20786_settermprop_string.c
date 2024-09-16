@@ -1,0 +1,14 @@
+static int settermprop_string(VTermState *state, VTermProp prop, const char *str, size_t len)
+{
+  char *strvalue;
+  int r;
+  VTermValue val;
+  strvalue = vterm_allocator_malloc(state->vt, (len+1) * sizeof(char));
+  strncpy(strvalue, str, len);
+  strvalue[len] = 0;
+
+  val.string = strvalue;
+  r = vterm_state_set_termprop(state, prop, &val);
+  vterm_allocator_free(state->vt, strvalue);
+  return r;
+}

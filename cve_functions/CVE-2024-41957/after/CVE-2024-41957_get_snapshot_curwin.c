@@ -1,0 +1,7 @@
+get_snapshot_curwin(int idx)
+{
+    if (curtab->tp_snapshot[idx] == NULL)
+	return NULL;
+
+    return get_snapshot_curwin_rec(curtab->tp_snapshot[idx]);
+}

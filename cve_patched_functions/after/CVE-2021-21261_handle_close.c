@@ -1,0 +1,11 @@
+handle_close (PortalFlatpakUpdateMonitor *monitor,
+              GDBusMethodInvocation *invocation)
+{
+  update_monitor_close (monitor);
+
+  g_debug ("handle UpdateMonitor.Close");
+
+  portal_flatpak_update_monitor_complete_close (monitor, invocation);
+
+  return G_DBUS_METHOD_INVOCATION_HANDLED;
+}

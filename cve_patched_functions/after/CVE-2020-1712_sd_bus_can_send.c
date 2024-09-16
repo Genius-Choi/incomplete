@@ -1,0 +1,24 @@
+_public_ int sd_bus_can_send(sd_bus *bus, char type) {
+        int r;
+
+        assert_return(bus, -EINVAL);
+        assert_return(bus = bus_resolve(bus), -ENOPKG);
+        assert_return(bus->state != BUS_UNSET, -ENOTCONN);
+        assert_return(!bus_pid_changed(bus), -ECHILD);
+
+        if (bus->is_monitor)
+                return 0;
+
+        if (type == SD_BUS_TYPE_UNIX_FD) {
+                if (!bus->accept_fd)
+                        return 0;
+
+                r = bus_ensure_running(bus);
+                if (r < 0)
+                        return r;
+
+                return bus->can_fds;
+        }
+
+        return bus_type_is_valid(type);
+}

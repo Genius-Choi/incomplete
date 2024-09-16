@@ -1,0 +1,20 @@
+var_redir_str(char_u *value, int value_len)
+{
+    int		len;
+
+    if (redir_lval == NULL)
+	return;
+
+    if (value_len == -1)
+	len = (int)STRLEN(value);	// Append the entire string
+    else
+	len = value_len;		// Append only "value_len" characters
+
+    if (ga_grow(&redir_ga, len) == OK)
+    {
+	mch_memmove((char *)redir_ga.ga_data + redir_ga.ga_len, value, len);
+	redir_ga.ga_len += len;
+    }
+    else
+	var_redir_stop();
+}

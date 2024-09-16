@@ -1,0 +1,18 @@
+flatpak_repo_set_icon (OstreeRepo *repo,
+                       const char *icon,
+                       GError    **error)
+{
+  g_autoptr(GKeyFile) config = NULL;
+
+  config = ostree_repo_copy_config (repo);
+
+  if (icon)
+    g_key_file_set_string (config, "flatpak", "icon", icon);
+  else
+    g_key_file_remove_key (config, "flatpak", "icon", NULL);
+
+  if (!ostree_repo_write_config (repo, config, error))
+    return FALSE;
+
+  return TRUE;
+}

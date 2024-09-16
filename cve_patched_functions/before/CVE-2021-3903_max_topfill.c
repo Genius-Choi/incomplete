@@ -1,0 +1,14 @@
+max_topfill(void)
+{
+    int		n;
+
+    n = plines_nofill(curwin->w_topline);
+    if (n >= curwin->w_height)
+	curwin->w_topfill = 0;
+    else
+    {
+	curwin->w_topfill = diff_check_fill(curwin, curwin->w_topline);
+	if (curwin->w_topfill + n > curwin->w_height)
+	    curwin->w_topfill = curwin->w_height - n;
+    }
+}

@@ -1,0 +1,4 @@
+check_cursor_col(void)
+{
+    check_cursor_col_win(curwin);
+}

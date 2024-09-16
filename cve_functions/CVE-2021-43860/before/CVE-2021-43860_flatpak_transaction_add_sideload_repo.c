@@ -1,0 +1,8 @@
+flatpak_transaction_add_sideload_repo (FlatpakTransaction  *self,
+                                       const char          *path)
+{
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+
+  g_ptr_array_add (priv->extra_sideload_repos,
+                   g_strdup (path));
+}

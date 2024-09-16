@@ -1,0 +1,11 @@
+static int timeout_compare(const void *a, const void *b) {
+        const struct reply_callback *x = a, *y = b;
+
+        if (x->timeout_usec != 0 && y->timeout_usec == 0)
+                return -1;
+
+        if (x->timeout_usec == 0 && y->timeout_usec != 0)
+                return 1;
+
+        return CMP(x->timeout_usec, y->timeout_usec);
+}

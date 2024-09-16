@@ -1,0 +1,16 @@
+CString CUser::GetLocalDCCIP() const {
+    if (!GetDCCBindHost().empty()) return GetDCCBindHost();
+
+    for (CIRCNetwork* pNetwork : m_vIRCNetworks) {
+        CIRCSock* pIRCSock = pNetwork->GetIRCSock();
+        if (pIRCSock) {
+            return pIRCSock->GetLocalIP();
+        }
+    }
+
+    if (!GetAllClients().empty()) {
+        return GetAllClients()[0]->GetLocalIP();
+    }
+
+    return "";
+}

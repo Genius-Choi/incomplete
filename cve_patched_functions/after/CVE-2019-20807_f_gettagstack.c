@@ -1,0 +1,16 @@
+f_gettagstack(typval_T *argvars, typval_T *rettv)
+{
+    win_T	*wp = curwin;			// default is current window
+
+    if (rettv_dict_alloc(rettv) != OK)
+	return;
+
+    if (argvars[0].v_type != VAR_UNKNOWN)
+    {
+	wp = find_win_by_nr_or_id(&argvars[0]);
+	if (wp == NULL)
+	    return;
+    }
+
+    get_tagstack(wp, rettv->vval.v_dict);
+}

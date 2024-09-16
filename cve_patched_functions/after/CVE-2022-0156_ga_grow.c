@@ -1,0 +1,6 @@
+ga_grow(garray_T *gap, int n)
+{
+    if (gap->ga_maxlen - gap->ga_len < n)
+	return ga_grow_inner(gap, n);
+    return OK;
+}

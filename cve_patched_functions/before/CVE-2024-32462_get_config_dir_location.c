@@ -1,0 +1,17 @@
+get_config_dir_location (void)
+{
+  static gsize path = 0;
+
+  if (g_once_init_enter (&path))
+    {
+      gsize setup_value = 0;
+      const char *config_dir = g_getenv ("FLATPAK_CONFIG_DIR");
+      if (config_dir != NULL)
+        setup_value = (gsize) config_dir;
+      else
+        setup_value = (gsize) FLATPAK_CONFIGDIR;
+      g_once_init_leave (&path, setup_value);
+    }
+
+  return (const char *) path;
+}

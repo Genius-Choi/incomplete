@@ -1,0 +1,28 @@
+GF_Err gf_isom_xml_subtitle_get_description(GF_ISOFile *the_file, u32 trackNumber, u32 StreamDescriptionIndex,
+        const char **xmlnamespace, const char **xml_schema_loc, const char **mimes)
+{
+	GF_TrackBox *trak;
+	GF_MetaDataSampleEntryBox *entry;
+	if (xmlnamespace) *xmlnamespace = NULL;
+	if (xml_schema_loc) *xml_schema_loc = NULL;
+	if (mimes) *mimes = NULL;
+	trak = gf_isom_get_track_from_file(the_file, trackNumber);
+	if (!trak || !StreamDescriptionIndex) return GF_BAD_PARAM;
+
+	entry = (GF_MetaDataSampleEntryBox *)gf_list_get(trak->Media->information->sampleTable->SampleDescription->child_boxes, StreamDescriptionIndex-1);
+	if (!entry) return GF_BAD_PARAM;
+ 
+	if ((entry->type!=GF_ISOM_BOX_TYPE_STPP) && (entry->type!=GF_ISOM_BOX_TYPE_METX)) {
+		return GF_BAD_PARAM;
+	}
+
+	if (entry->mime_type) {
+		if (mimes) *mimes = entry->mime_type;
+	}
+	if (entry->xml_schema_loc) {
+		if (xml_schema_loc) *xml_schema_loc = entry->xml_schema_loc;
+	}
+	if (xmlnamespace)
+		*xmlnamespace = entry->xml_namespace;
+	return GF_OK;
+}

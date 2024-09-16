@@ -1,0 +1,32 @@
+static GF_Err DumpLSRSendEvent(GF_SceneDumper *sdump, GF_Command *com)
+{
+	char szID[1024];
+	char *lsrns = sd_get_lsr_namespace(com->in_scene);
+	DUMP_IND(sdump);
+	gf_fprintf(sdump->trace, "<%sSendEvent ref=\"%s\" event=\"%s\"", lsrns,
+	        lsr_format_node_id(com->node, com->RouteID, szID),
+	        gf_dom_event_get_name(com->send_event_name)
+	       );
+	if (com->send_event_name <= GF_EVENT_MOUSEWHEEL)
+		gf_fprintf(sdump->trace, " pointvalue=\"%g %g\"", FIX2FLT(com->send_event_x), FIX2FLT(com->send_event_y) );
+
+	switch (com->send_event_name) {
+	case GF_EVENT_KEYDOWN:
+	case GF_EVENT_LONGKEYPRESS:
+	case GF_EVENT_REPEAT_KEY:
+	case GF_EVENT_SHORT_ACCESSKEY:
+		if (com->send_event_integer) {
+			gf_fprintf(sdump->trace, " stringvalue=\"%s\"", gf_dom_get_key_name(com->send_event_integer) );
+			break;
+		}
+	default:
+		if (com->send_event_integer)
+			gf_fprintf(sdump->trace, " intvalue=\"%d\"", com->send_event_integer);
+		if (com->send_event_string)
+			gf_fprintf(sdump->trace, " stringvalue=\"%s\"", com->send_event_string);
+		break;
+	}
+
+	gf_fprintf(sdump->trace, "/>\n");
+	return GF_OK;
+}

@@ -1,0 +1,18 @@
+u8* MemoryManager::quickmap_page(PhysicalPage& physical_page)
+{
+    ASSERT_INTERRUPTS_DISABLED();
+    ASSERT(!m_quickmap_in_use);
+    m_quickmap_in_use = true;
+    auto page_vaddr = m_quickmap_addr;
+    auto& pte = ensure_pte(kernel_page_directory(), page_vaddr);
+    pte.set_physical_page_base(physical_page.paddr().get());
+    pte.set_present(true);
+    pte.set_writable(true);
+    pte.set_user_allowed(false);
+    flush_tlb(page_vaddr);
+    ASSERT((u32)pte.physical_page_base() == physical_page.paddr().get());
+#ifdef MM_DEBUG
+    dbg() << "MM: >> quickmap_page " << page_vaddr << " => " << physical_page.paddr() << " @ PTE=" << (void*)pte.raw() << " {" << &pte << "}";
+#endif
+    return page_vaddr.as_ptr();
+}

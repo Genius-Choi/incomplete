@@ -1,0 +1,14 @@
+signal_accumulator_false_abort (GSignalInvocationHint *ihint,
+                                GValue                *return_accu,
+                                const GValue          *handler_return,
+                                gpointer               dummy)
+{
+  gboolean continue_emission;
+  gboolean signal_continue;
+
+  signal_continue = g_value_get_boolean (handler_return);
+  g_value_set_boolean (return_accu, signal_continue);
+  continue_emission = signal_continue;
+
+  return continue_emission;
+}

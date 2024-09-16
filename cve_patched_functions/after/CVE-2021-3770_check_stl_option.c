@@ -1,0 +1,61 @@
+check_stl_option(char_u *s)
+{
+    int		groupdepth = 0;
+    static char errbuf[80];
+
+    while (*s)
+    {
+	// Check for valid keys after % sequences
+	while (*s && *s != '%')
+	    s++;
+	if (!*s)
+	    break;
+	s++;
+	if (*s == '%' || *s == STL_TRUNCMARK || *s == STL_MIDDLEMARK)
+	{
+	    s++;
+	    continue;
+	}
+	if (*s == ')')
+	{
+	    s++;
+	    if (--groupdepth < 0)
+		break;
+	    continue;
+	}
+	if (*s == '-')
+	    s++;
+	while (VIM_ISDIGIT(*s))
+	    s++;
+	if (*s == STL_USER_HL)
+	    continue;
+	if (*s == '.')
+	{
+	    s++;
+	    while (*s && VIM_ISDIGIT(*s))
+		s++;
+	}
+	if (*s == '(')
+	{
+	    groupdepth++;
+	    continue;
+	}
+	if (vim_strchr(STL_ALL, *s) == NULL)
+	{
+	    return illegal_char(errbuf, *s);
+	}
+	if (*s == '{')
+	{
+	    int reevaluate = (*s == '%');
+
+	    s++;
+	    while ((*s != '}' || (reevaluate && s[-1] != '%')) && *s)
+		s++;
+	    if (*s != '}')
+		return N_("E540: Unclosed expression sequence");
+	}
+    }
+    if (groupdepth != 0)
+	return N_("E542: unbalanced groups");
+    return NULL;
+}

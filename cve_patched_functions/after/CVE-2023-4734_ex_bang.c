@@ -1,0 +1,4 @@
+ex_bang(exarg_T *eap)
+{
+    do_bang(eap->addr_count, eap, eap->forceit, TRUE, TRUE);
+}

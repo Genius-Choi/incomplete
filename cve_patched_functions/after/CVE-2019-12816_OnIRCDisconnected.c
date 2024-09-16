@@ -1,0 +1,4 @@
+bool CModules::OnIRCDisconnected() {
+    MODUNLOADCHK(OnIRCDisconnected());
+    return false;
+}

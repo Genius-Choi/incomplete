@@ -1,0 +1,7 @@
+cleanup_vterm(term_T *term)
+{
+    if (term->tl_finish != TL_FINISH_CLOSE)
+	may_move_terminal_to_buffer(term, TRUE);
+    term_free_vterm(term);
+    set_terminal_mode(term, FALSE);
+}

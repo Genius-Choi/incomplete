@@ -1,0 +1,28 @@
+static GF_Err DumpRouteInsert(GF_SceneDumper *sdump, GF_Command *com, Bool is_scene_replace)
+{
+	GF_Route r;
+
+	memset(&r, 0, sizeof(GF_Route));
+	r.ID = com->RouteID;
+	r.name = com->def_name;
+	r.FromNode = gf_dump_find_node(sdump, com->fromNodeID);
+	r.FromField.fieldIndex = com->fromFieldIndex;
+	r.ToNode = gf_dump_find_node(sdump, com->toNodeID);
+	r.ToField.fieldIndex = com->toFieldIndex;
+
+	gf_list_add(sdump->inserted_routes, com);
+
+	if (is_scene_replace) {
+		gf_dump_vrml_route(sdump, &r, 0);
+	} else {
+		DUMP_IND(sdump);
+		if (sdump->XMLDump) {
+			gf_fprintf(sdump->trace, "<Insert>\n");
+		} else {
+			gf_fprintf(sdump->trace, "INSERT ");
+		}
+		gf_dump_vrml_route(sdump, &r, 2);
+		if (sdump->XMLDump) gf_fprintf(sdump->trace, "</Insert>");
+	}
+	return GF_OK;
+}

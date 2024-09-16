@@ -1,0 +1,6 @@
+flatpak_transaction_operation_class_init (FlatpakTransactionOperationClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->finalize = flatpak_transaction_operation_finalize;
+}

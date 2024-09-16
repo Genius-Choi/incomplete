@@ -1,0 +1,4 @@
+valid_filetype(char_u *val)
+{
+    return valid_name(val, ".-_");
+}

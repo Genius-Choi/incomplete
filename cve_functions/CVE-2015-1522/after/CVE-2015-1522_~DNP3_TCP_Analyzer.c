@@ -1,0 +1,3 @@
+DNP3_TCP_Analyzer::~DNP3_TCP_Analyzer()
+	{
+	}

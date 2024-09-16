@@ -1,0 +1,15 @@
+flatpak_deploy_new (GFile             *dir,
+                    FlatpakDecomposed *ref,
+                    GKeyFile          *metadata,
+                    OstreeRepo        *repo)
+{
+  FlatpakDeploy *deploy;
+
+  deploy = g_object_new (FLATPAK_TYPE_DEPLOY, NULL);
+  deploy->ref = flatpak_decomposed_ref (ref);
+  deploy->dir = g_object_ref (dir);
+  deploy->metadata = g_key_file_ref (metadata);
+  deploy->repo = g_object_ref (repo);
+
+  return deploy;
+}

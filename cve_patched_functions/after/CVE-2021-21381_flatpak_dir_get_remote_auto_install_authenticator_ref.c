@@ -1,0 +1,17 @@
+flatpak_dir_get_remote_auto_install_authenticator_ref (FlatpakDir         *self,
+                                                        const char         *remote_name)
+{
+  g_autofree char *authenticator_name = NULL;
+  g_autoptr(FlatpakDecomposed) ref = NULL;
+
+  authenticator_name = flatpak_dir_get_remote_install_authenticator_name (self, remote_name);
+  if (authenticator_name != NULL)
+    {
+      g_autoptr(GError) local_error = NULL;
+      ref = flatpak_decomposed_new_from_parts (FLATPAK_KINDS_APP, authenticator_name, flatpak_get_arch (), "autoinstall", &local_error);
+      if (ref == NULL)
+        g_debug ("Invalid authenticator ref: %s\n", local_error->message);
+    }
+
+  return g_steal_pointer (&ref);
+}

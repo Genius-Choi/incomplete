@@ -1,0 +1,7 @@
+flatpak_transaction_set_no_interaction (FlatpakTransaction *self,
+                                        gboolean            no_interaction)
+{
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+
+  flatpak_dir_set_no_interaction (priv->dir, no_interaction);
+}

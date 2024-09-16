@@ -1,0 +1,51 @@
+ins_ctrl_g(void)
+{
+    int		c;
+
+    // Right after CTRL-X the cursor will be after the ruler.
+    setcursor();
+
+    /*
+     * Don't map the second key. This also prevents the mode message to be
+     * deleted when ESC is hit.
+     */
+    ++no_mapping;
+    ++allow_keys;
+    c = plain_vgetc();
+    --no_mapping;
+    --allow_keys;
+    switch (c)
+    {
+	// CTRL-G k and CTRL-G <Up>: cursor up to Insstart.col
+	case K_UP:
+	case Ctrl_K:
+	case 'k': ins_up(TRUE);
+		  break;
+
+	// CTRL-G j and CTRL-G <Down>: cursor down to Insstart.col
+	case K_DOWN:
+	case Ctrl_J:
+	case 'j': ins_down(TRUE);
+		  break;
+
+	// CTRL-G u: start new undoable edit
+	case 'u': u_sync(TRUE);
+		  ins_need_undo = TRUE;
+
+		  // Need to reset Insstart, esp. because a BS that joins
+		  // a line to the previous one must save for undo.
+		  update_Insstart_orig = FALSE;
+		  Insstart = curwin->w_cursor;
+		  break;
+
+	// CTRL-G U: do not break undo with the next char
+	case 'U':
+		  // Allow one left/right cursor movement with the next char,
+		  // without breaking undo.
+		  dont_sync_undo = MAYBE;
+		  break;
+
+	// Unknown CTRL-G command, reserved for future expansion.
+	default:  vim_beep(BO_CTRLG);
+    }
+}

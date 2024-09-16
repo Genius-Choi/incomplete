@@ -1,0 +1,4 @@
+const int& getActiveId(const void* object, const StructInfo& info) {
+  return *reinterpret_cast<const int*>(
+      static_cast<const char*>(object) + info.unionExt->unionTypeOffset);
+}

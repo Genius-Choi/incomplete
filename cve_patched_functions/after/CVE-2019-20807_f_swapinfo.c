@@ -1,0 +1,5 @@
+f_swapinfo(typval_T *argvars, typval_T *rettv)
+{
+    if (rettv_dict_alloc(rettv) == OK)
+	get_b0_dict(tv_get_string(argvars), rettv->vval.v_dict);
+}

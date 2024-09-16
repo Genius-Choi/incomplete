@@ -1,0 +1,15 @@
+static int bus_remarshal_message(sd_bus *b, sd_bus_message **m) {
+        bool remarshal = false;
+
+        assert(b);
+
+        /* wrong packet version */
+        if (b->message_version != 0 && b->message_version != (*m)->header->version)
+                remarshal = true;
+
+        /* wrong packet endianness */
+        if (b->message_endian != 0 && b->message_endian != (*m)->header->endian)
+                remarshal = true;
+
+        return remarshal ? bus_message_remarshal(b, m) : 0;
+}

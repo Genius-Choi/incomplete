@@ -1,0 +1,19 @@
+f_getbufline(typval_T *argvars, typval_T *rettv)
+{
+    linenr_T	lnum;
+    linenr_T	end;
+    buf_T	*buf;
+
+    (void)tv_get_number(&argvars[0]);	    /* issue errmsg if type error */
+    ++emsg_off;
+    buf = tv_get_buf(&argvars[0], FALSE);
+    --emsg_off;
+
+    lnum = tv_get_lnum_buf(&argvars[1], buf);
+    if (argvars[2].v_type == VAR_UNKNOWN)
+	end = lnum;
+    else
+	end = tv_get_lnum_buf(&argvars[2], buf);
+
+    get_buffer_lines(buf, lnum, end, TRUE, rettv);
+}

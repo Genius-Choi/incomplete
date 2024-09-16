@@ -1,0 +1,4 @@
+bt_quickfix(buf_T *buf)
+{
+    return buf != NULL && buf->b_p_bt[0] == 'q';
+}

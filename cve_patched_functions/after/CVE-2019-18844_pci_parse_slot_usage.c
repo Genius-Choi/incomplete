@@ -1,0 +1,4 @@
+pci_parse_slot_usage(char *aopt)
+{
+	fprintf(stderr, "Invalid PCI slot info field \"%s\"\n", aopt);
+}

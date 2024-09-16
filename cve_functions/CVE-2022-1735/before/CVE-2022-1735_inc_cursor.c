@@ -1,0 +1,4 @@
+inc_cursor(void)
+{
+    return inc(&curwin->w_cursor);
+}

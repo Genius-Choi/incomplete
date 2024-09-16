@@ -1,0 +1,3 @@
+_public_ int sd_bus_process_priority(sd_bus *bus, int64_t priority, sd_bus_message **ret) {
+        return bus_process_internal(bus, true, priority, ret);
+}

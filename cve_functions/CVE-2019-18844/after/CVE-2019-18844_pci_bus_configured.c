@@ -1,0 +1,4 @@
+pci_bus_configured(int bus)
+{
+	return (pci_businfo[bus] != NULL);
+}

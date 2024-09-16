@@ -1,0 +1,12 @@
+appended_lines_mark(linenr_T lnum, long count)
+{
+    // Skip mark_adjust when adding a line after the last one, there can't
+    // be marks there. But it's still needed in diff mode.
+    if (lnum + count < curbuf->b_ml.ml_line_count
+#ifdef FEAT_DIFF
+	    || curwin->w_p_diff
+#endif
+	)
+	mark_adjust(lnum + 1, (linenr_T)MAXLNUM, count, 0L);
+    changed_lines(lnum + 1, 0, lnum + 1, count);
+}

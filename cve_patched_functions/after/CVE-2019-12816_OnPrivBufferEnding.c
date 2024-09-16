@@ -1,0 +1,3 @@
+bool CModules::OnPrivBufferEnding(CQuery& Query, CClient& Client) {
+    MODHALTCHK(OnPrivBufferEnding(Query, Client));
+}

@@ -1,0 +1,22 @@
+flatpak_levenshtein_distance (const char *s,
+                              gssize ls,
+                              const char *t,
+                              gssize lt)
+{
+  int i, j;
+  int *d;
+
+  if (ls < 0)
+    ls = strlen (s);
+
+  if (lt < 0)
+    lt = strlen (t);
+
+  d = alloca (sizeof (int) * (ls + 1) * (lt + 1));
+
+  for (i = 0; i <= ls; i++)
+    for (j = 0; j <= lt; j++)
+      d[i * (lt + 1) + j] = -1;
+
+  return dist (s, ls, t, lt, 0, 0, d);
+}

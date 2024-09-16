@@ -1,0 +1,3 @@
+bool CModule::OnWebPreRequest(CWebSock& WebSock, const CString& sPageName) {
+    return false;
+}

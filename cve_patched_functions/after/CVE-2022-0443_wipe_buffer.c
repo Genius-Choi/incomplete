@@ -1,0 +1,15 @@
+wipe_buffer(
+    buf_T	*buf,
+    int		aucmd)	    // When TRUE trigger autocommands.
+{
+    if (buf->b_fnum == top_file_num - 1)
+	--top_file_num;
+
+    if (!aucmd)		    // Don't trigger BufDelete autocommands here.
+	block_autocmds();
+
+    close_buffer(NULL, buf, DOBUF_WIPE, FALSE, TRUE);
+
+    if (!aucmd)
+	unblock_autocmds();
+}

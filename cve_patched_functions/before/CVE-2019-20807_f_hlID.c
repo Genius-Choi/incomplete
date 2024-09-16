@@ -1,0 +1,4 @@
+f_hlID(typval_T *argvars, typval_T *rettv)
+{
+    rettv->vval.v_number = syn_name2id(tv_get_string(&argvars[0]));
+}

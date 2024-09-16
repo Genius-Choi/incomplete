@@ -1,0 +1,4 @@
+bool Subgraph::IsCancelled() {
+  return (check_cancelled_func_ != nullptr) &&
+         (*check_cancelled_func_)(cancellation_data_);
+}

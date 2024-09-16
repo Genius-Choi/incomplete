@@ -1,0 +1,15 @@
+YCPList IniAgent::Dir(const YCPPath& path)
+{
+    if (!parser.isStarted())
+	{
+	    y2warning("Can't execute Dir before being mounted.");
+	    return YCPNull();
+	}
+    parser.UpdateIfModif ();
+
+    YCPList l;
+    if (!parser.inifile.Dir (path, l))
+	return l;
+
+    return YCPNull();
+}

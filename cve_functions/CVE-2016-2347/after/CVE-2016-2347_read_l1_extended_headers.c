@@ -1,0 +1,40 @@
+static int read_l1_extended_headers(LHAFileHeader **header,
+                                    LHAInputStream *stream)
+{
+	uint8_t *ext_header;
+	size_t ext_header_len;
+
+	for (;;) {
+		// Try to read the next header.
+
+		if (!read_next_ext_header(header, stream,
+		                          &ext_header, &ext_header_len)) {
+			return 0;
+		}
+
+		// Last header?
+
+		if (ext_header_len == 0) {
+			break;
+		}
+
+		// For backwards compatibility with level 0 headers,
+		// the compressed length field is actually "compressed
+		// length + length of all extended headers":
+
+		if ((*header)->compressed_length < ext_header_len) {
+			return 0;
+		}
+
+		(*header)->compressed_length -= ext_header_len;
+
+		// Must be at least 3 bytes - 1 byte header type
+		// + 2 bytes for next header length
+
+		if (ext_header_len < 3) {
+			return 0;
+		}
+	}
+
+	return 1;
+}

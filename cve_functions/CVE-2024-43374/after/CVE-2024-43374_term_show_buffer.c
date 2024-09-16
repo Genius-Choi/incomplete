@@ -1,0 +1,6 @@
+term_show_buffer(buf_T *buf)
+{
+    term_T *term = buf->b_term;
+
+    return term != NULL && (term->tl_vterm == NULL || term->tl_normal_mode);
+}

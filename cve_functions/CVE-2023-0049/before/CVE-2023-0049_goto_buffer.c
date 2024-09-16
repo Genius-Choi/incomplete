@@ -1,0 +1,39 @@
+goto_buffer(
+    exarg_T	*eap,
+    int		start,
+    int		dir,
+    int		count)
+{
+    bufref_T	old_curbuf;
+    int		save_sea = swap_exists_action;
+
+    set_bufref(&old_curbuf, curbuf);
+
+    if (swap_exists_action == SEA_NONE)
+	swap_exists_action = SEA_DIALOG;
+    (void)do_buffer(*eap->cmd == 's' ? DOBUF_SPLIT : DOBUF_GOTO,
+					     start, dir, count, eap->forceit);
+    if (swap_exists_action == SEA_QUIT && *eap->cmd == 's')
+    {
+#if defined(FEAT_EVAL)
+	cleanup_T   cs;
+
+	// Reset the error/interrupt/exception state here so that
+	// aborting() returns FALSE when closing a window.
+	enter_cleanup(&cs);
+#endif
+
+	// Quitting means closing the split window, nothing else.
+	win_close(curwin, TRUE);
+	swap_exists_action = save_sea;
+	swap_exists_did_quit = TRUE;
+
+#if defined(FEAT_EVAL)
+	// Restore the error/interrupt/exception state if not discarded by a
+	// new aborting error, interrupt, or uncaught exception.
+	leave_cleanup(&cs);
+#endif
+    }
+    else
+	handle_swap_exists(&old_curbuf);
+}

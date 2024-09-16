@@ -1,0 +1,15 @@
+flatpak_repo_set_collection_id (OstreeRepo *repo,
+                                const char *collection_id,
+                                GError    **error)
+{
+  g_autoptr(GKeyFile) config = NULL;
+
+  if (!ostree_repo_set_collection_id (repo, collection_id, error))
+    return FALSE;
+
+  config = ostree_repo_copy_config (repo);
+  if (!ostree_repo_write_config (repo, config, error))
+    return FALSE;
+
+  return TRUE;
+}

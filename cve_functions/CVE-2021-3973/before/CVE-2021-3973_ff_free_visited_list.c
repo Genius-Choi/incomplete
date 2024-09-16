@@ -1,0 +1,15 @@
+ff_free_visited_list(ff_visited_T *vl)
+{
+    ff_visited_T *vp;
+
+    while (vl != NULL)
+    {
+	vp = vl->ffv_next;
+#ifdef FEAT_PATH_EXTRA
+	vim_free(vl->ffv_wc_path);
+#endif
+	vim_free(vl);
+	vl = vp;
+    }
+    vl = NULL;
+}

@@ -1,0 +1,4 @@
+ldns_rr_set_rd_count(ldns_rr *rr, size_t count)
+{
+	rr->_rd_count = count;
+}

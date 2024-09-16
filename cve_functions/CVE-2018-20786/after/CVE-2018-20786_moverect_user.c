@@ -1,0 +1,17 @@
+static int moverect_user(VTermRect dest, VTermRect src, void *user)
+{
+  VTermScreen *screen = user;
+
+  if(screen->callbacks && screen->callbacks->moverect) {
+    if(screen->damage_merge != VTERM_DAMAGE_SCROLL)
+      // Avoid an infinite loop
+      vterm_screen_flush_damage(screen);
+
+    if((*screen->callbacks->moverect)(dest, src, screen->cbdata))
+      return 1;
+  }
+
+  damagerect(screen, dest);
+
+  return 1;
+}

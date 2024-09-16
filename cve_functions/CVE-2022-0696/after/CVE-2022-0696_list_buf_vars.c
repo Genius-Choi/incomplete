@@ -1,0 +1,4 @@
+list_buf_vars(int *first)
+{
+    list_hashtable_vars(&curbuf->b_vars->dv_hashtab, "b:", TRUE, first);
+}

@@ -1,0 +1,4 @@
+bool CModules::OnPostRehash() {
+    MODUNLOADCHK(OnPostRehash());
+    return false;
+}

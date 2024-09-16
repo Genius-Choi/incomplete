@@ -1,0 +1,9 @@
+dbcs_char2cells(int c)
+{
+    // Number of cells is equal to number of bytes, except for euc-jp when
+    // the first byte is 0x8e.
+    if (enc_dbcs == DBCS_JPNU && ((unsigned)c >> 8) == 0x8e)
+	return 1;
+    // use the first byte
+    return MB_BYTE2LEN((unsigned)c >> 8);
+}

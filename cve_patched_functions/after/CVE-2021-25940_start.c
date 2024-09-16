@@ -1,0 +1,34 @@
+void ServerFeature::start() {
+#if _WIN32
+  _originalCodePage = GetConsoleOutputCP();
+  if (IsValidCodePage(_codePage)) {
+    SetConsoleOutputCP(_codePage);
+  }
+#endif
+
+  waitForHeartbeat();
+
+  *_result = EXIT_SUCCESS;
+
+  switch (_operationMode) {
+    case OperationMode::MODE_SCRIPT:
+    case OperationMode::MODE_CONSOLE:
+      break;
+
+    case OperationMode::MODE_SERVER:
+      LOG_TOPIC("7031b", TRACE, Logger::STARTUP) << "server operation mode: SERVER";
+      break;
+  }
+
+  // flush all log output before we go on... this is sensible because any
+  // of the following options may print or prompt, and pending log entries
+  // might overwrite that
+  Logger::flush();
+
+  if (!isConsoleMode()) {
+    // install CTRL-C handlers
+    server().registerStartupCallback([this]() {
+      server().getFeature<SchedulerFeature>().buildControlCHandler();
+    });
+  }
+}

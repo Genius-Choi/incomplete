@@ -1,0 +1,4 @@
+void *vterm_state_get_unrecognised_fbdata(VTermState *state)
+{
+  return state->fbdata;
+}

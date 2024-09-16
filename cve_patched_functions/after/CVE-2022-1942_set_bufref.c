@@ -1,0 +1,6 @@
+set_bufref(bufref_T *bufref, buf_T *buf)
+{
+    bufref->br_buf = buf;
+    bufref->br_fnum = buf == NULL ? 0 : buf->b_fnum;
+    bufref->br_buf_free_count = buf_free_count;
+}

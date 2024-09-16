@@ -1,0 +1,5 @@
+bool CModules::OnDeop2(const CNick* pOpNick, const CNick& Nick, CChan& Channel,
+                       bool bNoChange) {
+    MODUNLOADCHK(OnDeop2(pOpNick, Nick, Channel, bNoChange));
+    return false;
+}

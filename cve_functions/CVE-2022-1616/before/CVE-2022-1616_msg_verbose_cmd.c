@@ -1,0 +1,15 @@
+msg_verbose_cmd(linenr_T lnum, char_u *cmd)
+{
+    ++no_wait_return;
+    verbose_enter_scroll();
+
+    if (lnum == 0)
+	smsg(_("Executing: %s"), cmd);
+    else
+	smsg(_("line %ld: %s"), (long)lnum, cmd);
+    if (msg_silent == 0)
+	msg_puts("\n");   // don't overwrite this
+
+    verbose_leave_scroll();
+    --no_wait_return;
+}

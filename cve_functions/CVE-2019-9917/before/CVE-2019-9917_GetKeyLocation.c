@@ -1,0 +1,4 @@
+CString CZNC::GetKeyLocation() const {
+    return CDir::ChangeDir(
+        "", m_sSSLKeyFile.empty() ? m_sSSLCertFile : m_sSSLKeyFile);
+}

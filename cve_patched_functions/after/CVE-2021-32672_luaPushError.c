@@ -1,0 +1,23 @@
+void luaPushError(lua_State *lua, char *error) {
+    lua_Debug dbg;
+
+    /* If debugging is active and in step mode, log errors resulting from
+     * Redis commands. */
+    if (ldb.active && ldb.step) {
+        ldbLog(sdscatprintf(sdsempty(),"<error> %s",error));
+    }
+
+    lua_newtable(lua);
+    lua_pushstring(lua,"err");
+
+    /* Attempt to figure out where this function was called, if possible */
+    if(lua_getstack(lua, 1, &dbg) && lua_getinfo(lua, "nSl", &dbg)) {
+        sds msg = sdscatprintf(sdsempty(), "%s: %d: %s",
+            dbg.source, dbg.currentline, error);
+        lua_pushstring(lua, msg);
+        sdsfree(msg);
+    } else {
+        lua_pushstring(lua, error);
+    }
+    lua_settable(lua,-3);
+}

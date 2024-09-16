@@ -1,0 +1,10 @@
+f_tanh(typval_T *argvars, typval_T *rettv)
+{
+    float_T	f = 0.0;
+
+    rettv->v_type = VAR_FLOAT;
+    if (get_float_arg(argvars, &f) == OK)
+	rettv->vval.v_float = tanh(f);
+    else
+	rettv->vval.v_float = 0.0;
+}

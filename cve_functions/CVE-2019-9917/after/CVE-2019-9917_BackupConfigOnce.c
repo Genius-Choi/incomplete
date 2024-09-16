@@ -1,0 +1,13 @@
+void CZNC::BackupConfigOnce(const CString& sSuffix) {
+    static bool didBackup = false;
+    if (didBackup) return;
+    didBackup = true;
+
+    CUtils::PrintAction("Creating a config backup");
+
+    CString sBackup = CDir::ChangeDir(m_sConfigFile, "../znc.conf." + sSuffix);
+    if (CFile::Copy(m_sConfigFile, sBackup))
+        CUtils::PrintStatus(true, sBackup);
+    else
+        CUtils::PrintStatus(false, strerror(errno));
+}

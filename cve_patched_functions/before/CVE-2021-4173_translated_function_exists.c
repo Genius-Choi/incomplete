@@ -1,0 +1,6 @@
+translated_function_exists(char_u *name, int is_global)
+{
+    if (builtin_function(name, -1))
+	return has_internal_func(name);
+    return find_func(name, is_global, NULL) != NULL;
+}

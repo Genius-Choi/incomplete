@@ -1,0 +1,13 @@
+unref_skeleton_in_timeout (void)
+{
+  if (name_owner_id)
+    g_bus_unown_name (name_owner_id);
+  name_owner_id = 0;
+
+  /* After we've lost the name or idled we drop the main ref on the helper
+     so that we'll exit when it drops to zero. However, if there are
+     outstanding calls these will keep the refcount up during the
+     execution of them. We do the unref on a timeout to make sure
+     we're completely draining the queue of (stale) requests. */
+  g_timeout_add (500, unref_skeleton_in_timeout_cb, NULL);
+}

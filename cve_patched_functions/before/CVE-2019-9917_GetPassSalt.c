@@ -1,0 +1,1 @@
+const CString& CUser::GetPassSalt() const { return m_sPassSalt; }

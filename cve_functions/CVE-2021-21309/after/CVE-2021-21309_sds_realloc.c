@@ -1,0 +1,1 @@
+void *sds_realloc(void *ptr, size_t size) { return s_realloc(ptr,size); }

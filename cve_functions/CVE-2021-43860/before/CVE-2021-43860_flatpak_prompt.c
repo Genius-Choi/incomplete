@@ -1,0 +1,31 @@
+flatpak_prompt (gboolean allow_empty,
+                const char *prompt, ...)
+{
+  char buf[512];
+  va_list var_args;
+  g_autofree char *s = NULL;
+
+
+  va_start (var_args, prompt);
+  s = g_strdup_vprintf (prompt, var_args);
+  va_end (var_args);
+
+  while (TRUE)
+    {
+      g_print ("%s: ", s);
+
+      if (!isatty (STDIN_FILENO) || !isatty (STDOUT_FILENO))
+        {
+          g_print ("n\n");
+          return NULL;
+        }
+
+      if (fgets (buf, sizeof (buf), stdin) == NULL)
+        return NULL;
+
+      g_strstrip (buf);
+
+      if (buf[0] != 0 || allow_empty)
+        return g_strdup (buf);
+    }
+}

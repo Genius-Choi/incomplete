@@ -1,0 +1,16 @@
+void DNP3_UDP_Analyzer::DeliverPacket(int len, const u_char* data, bool orig, uint64 seq, const IP_Hdr* ip, int caplen)
+	{
+	Analyzer::DeliverPacket(len, data, orig, seq, ip, caplen);
+
+	try
+		{
+		if ( ! ProcessData(len, data, orig) )
+			SetSkip(1);
+		}
+
+	catch ( const binpac::Exception& e )
+		{
+		SetSkip(1);
+		throw;
+		}
+	}

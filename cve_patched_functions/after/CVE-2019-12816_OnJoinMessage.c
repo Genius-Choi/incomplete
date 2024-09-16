@@ -1,0 +1,4 @@
+bool CModules::OnJoinMessage(CJoinMessage& Message) {
+    MODUNLOADCHK(OnJoinMessage(Message));
+    return false;
+}

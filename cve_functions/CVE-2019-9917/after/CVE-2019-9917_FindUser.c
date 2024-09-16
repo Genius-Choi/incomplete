@@ -1,0 +1,15 @@
+    CUser* FindUser(const CString& sUsername) {
+        if (sUsername.Equals("$me") || sUsername.Equals("$user"))
+            return GetUser();
+        CUser* pUser = CZNC::Get().FindUser(sUsername);
+        if (!pUser) {
+            PutModule(t_f("Error: User [{1}] does not exist!")(sUsername));
+            return nullptr;
+        }
+        if (pUser != GetUser() && !GetUser()->IsAdmin()) {
+            PutModule(t_s(
+                "Error: You need to have admin rights to modify other users!"));
+            return nullptr;
+        }
+        return pUser;
+    }

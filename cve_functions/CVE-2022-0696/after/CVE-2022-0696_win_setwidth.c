@@ -1,0 +1,4 @@
+win_setwidth(int width)
+{
+    win_setwidth_win(width, curwin);
+}

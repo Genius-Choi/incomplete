@@ -1,0 +1,5 @@
+bool CModules::OnModuleLoading(const CString& sModName, const CString& sArgs,
+                               CModInfo::EModuleType eType, bool& bSuccess,
+                               CString& sRetMsg) {
+    MODHALTCHK(OnModuleLoading(sModName, sArgs, eType, bSuccess, sRetMsg));
+}

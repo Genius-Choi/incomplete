@@ -1,0 +1,9 @@
+CFGREAD(struct pci_vdev *dev, int coff, int bytes)
+{
+	if (bytes == 1)
+		return pci_get_cfgdata8(dev, coff);
+	else if (bytes == 2)
+		return pci_get_cfgdata16(dev, coff);
+	else
+		return pci_get_cfgdata32(dev, coff);
+}

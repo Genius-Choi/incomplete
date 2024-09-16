@@ -1,0 +1,23 @@
+void lha_file_header_free(LHAFileHeader *header)
+{
+	// Sanity check:
+
+	if (header->_refcount == 0) {
+		return;
+	}
+
+	// Count down references and only free when all have been removed.
+
+	--header->_refcount;
+
+	if (header->_refcount > 0) {
+		return;
+	}
+
+	free(header->filename);
+	free(header->path);
+	free(header->symlink_target);
+	free(header->unix_username);
+	free(header->unix_group);
+	free(header);
+}

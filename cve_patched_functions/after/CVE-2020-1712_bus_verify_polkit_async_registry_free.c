@@ -1,0 +1,5 @@
+void bus_verify_polkit_async_registry_free(Hashmap *registry) {
+#if ENABLE_POLKIT
+        hashmap_free_with_destructor(registry, async_polkit_query_free);
+#endif
+}

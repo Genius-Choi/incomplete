@@ -1,0 +1,19 @@
+initable_init (GInitable    *initable,
+               GCancellable *cancellable,
+               GError      **error)
+{
+  FlatpakTransaction *self = FLATPAK_TRANSACTION (initable);
+  FlatpakTransactionPrivate *priv = flatpak_transaction_get_instance_private (self);
+  g_autoptr(FlatpakDir) dir = NULL;
+
+  if (priv->installation == NULL)
+    return flatpak_fail (error, "No installation specified");
+
+  dir = flatpak_installation_clone_dir (priv->installation, cancellable, error);
+  if (dir == NULL)
+    return FALSE;
+
+  priv->dir = g_steal_pointer (&dir);
+
+  return TRUE;
+}

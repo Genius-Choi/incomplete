@@ -1,0 +1,7 @@
+static int openssl_verify_cert_error_string(lua_State*L)
+{
+  int v = luaL_checkint(L, 1);
+  const char*s = X509_verify_cert_error_string(v);
+  lua_pushstring(L, s);
+  return 1;
+}

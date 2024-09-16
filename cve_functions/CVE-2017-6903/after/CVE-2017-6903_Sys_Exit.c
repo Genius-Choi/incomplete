@@ -1,0 +1,17 @@
+static void NORETURN Sys_Exit( int ex ) {
+	IN_Shutdown();
+#ifndef DEDICATED
+	SDL_Quit();
+#endif
+
+	NET_Shutdown();
+
+	Sys_PlatformExit();
+
+	Com_ShutdownHunkMemory();
+	Com_ShutdownZoneMemory();
+
+	CON_Shutdown();
+
+    exit( ex );
+}

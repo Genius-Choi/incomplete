@@ -1,0 +1,27 @@
+flatpak_variant_save (GFile        *dest,
+                      GVariant     *variant,
+                      GCancellable *cancellable,
+                      GError      **error)
+{
+  g_autoptr(GOutputStream) out = NULL;
+  gsize bytes_written;
+
+  out = (GOutputStream *) g_file_replace (dest, NULL, FALSE,
+                                          G_FILE_CREATE_REPLACE_DESTINATION,
+                                          cancellable, error);
+  if (out == NULL)
+    return FALSE;
+
+  if (!g_output_stream_write_all (out,
+                                  g_variant_get_data (variant),
+                                  g_variant_get_size (variant),
+                                  &bytes_written,
+                                  cancellable,
+                                  error))
+    return FALSE;
+
+  if (!g_output_stream_close (out, cancellable, error))
+    return FALSE;
+
+  return TRUE;
+}

@@ -1,0 +1,9 @@
+func_has_ended(void *cookie)
+{
+    funccall_T  *fcp = (funccall_T *)cookie;
+
+    // Ignore the "abort" flag if the abortion behavior has been changed due to
+    // an error inside a try conditional.
+    return (((fcp->func->uf_flags & FC_ABORT) && did_emsg && !aborted_in_try())
+	    || fcp->returned);
+}

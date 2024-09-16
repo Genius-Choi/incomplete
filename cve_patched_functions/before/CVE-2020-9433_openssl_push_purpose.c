@@ -1,0 +1,13 @@
+static int openssl_push_purpose(lua_State*L, X509_PURPOSE* purpose)
+{
+  lua_newtable(L);
+
+  AUXILIAR_SET(L, -1, "purpose", purpose->purpose, integer);
+  AUXILIAR_SET(L, -1, "trust", purpose->trust, integer);
+  AUXILIAR_SET(L, -1, "flags", purpose->flags, integer);
+
+  AUXILIAR_SET(L, -1, "name", purpose->name, string);
+  AUXILIAR_SET(L, -1, "sname", purpose->sname, string);
+
+  return 1;
+};

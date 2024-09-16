@@ -1,0 +1,10 @@
+oci_layer_progress (guint64  downloaded_bytes,
+                    gpointer user_data)
+{
+  FlatpakOciPullProgressData *progress_data = user_data;
+
+  if (progress_data->progress_cb)
+    progress_data->progress_cb (progress_data->total_size, progress_data->previous_layers_size + downloaded_bytes,
+                                progress_data->n_layers, progress_data->pulled_layers,
+                                progress_data->progress_user_data);
+}

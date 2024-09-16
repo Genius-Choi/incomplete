@@ -1,0 +1,26 @@
+f_getwinpos(typval_T *argvars UNUSED, typval_T *rettv)
+{
+    int x = -1;
+    int y = -1;
+
+    if (rettv_list_alloc(rettv) == FAIL)
+	return;
+#ifdef FEAT_GUI
+    if (gui.in_use)
+	(void)gui_mch_get_winpos(&x, &y);
+# if defined(HAVE_TGETENT) && defined(FEAT_TERMRESPONSE)
+    else
+# endif
+#endif
+#if defined(HAVE_TGETENT) && defined(FEAT_TERMRESPONSE)
+    {
+	varnumber_T timeout = 100;
+
+	if (argvars[0].v_type != VAR_UNKNOWN)
+	    timeout = tv_get_number(&argvars[0]);
+	term_get_winpos(&x, &y, timeout);
+    }
+#endif
+    list_append_number(rettv->vval.v_list, (varnumber_T)x);
+    list_append_number(rettv->vval.v_list, (varnumber_T)y);
+}

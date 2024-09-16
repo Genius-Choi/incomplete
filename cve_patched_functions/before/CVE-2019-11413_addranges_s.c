@@ -1,0 +1,8 @@
+static void addranges_s(struct cstate *g)
+{
+	addrange(g, 0x9, 0xD);
+	addrange(g, 0x20, 0x20);
+	addrange(g, 0xA0, 0xA0);
+	addrange(g, 0x2028, 0x2029);
+	addrange(g, 0xFEFF, 0xFEFF);
+}

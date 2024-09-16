@@ -1,0 +1,11 @@
+pci_emul_iscap(struct pci_vdev *dev, int offset)
+{
+	uint16_t sts;
+
+	sts = pci_get_cfgdata16(dev, PCIR_STATUS);
+	if ((sts & PCIM_STATUS_CAPPRESENT) != 0) {
+		if (offset >= CAP_START_OFFSET && offset <= dev->capend)
+			return 1;
+	}
+	return 0;
+}

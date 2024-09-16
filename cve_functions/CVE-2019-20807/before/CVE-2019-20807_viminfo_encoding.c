@@ -1,0 +1,21 @@
+viminfo_encoding(vir_T *virp)
+{
+    char_u	*p;
+    int		i;
+
+    if (get_viminfo_parameter('c') != 0)
+    {
+	p = vim_strchr(virp->vir_line, '=');
+	if (p != NULL)
+	{
+	    /* remove trailing newline */
+	    ++p;
+	    for (i = 0; vim_isprintc(p[i]); ++i)
+		;
+	    p[i] = NUL;
+
+	    convert_setup(&virp->vir_conv, p, p_enc);
+	}
+    }
+    return viminfo_readline(virp);
+}

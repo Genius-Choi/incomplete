@@ -1,0 +1,5 @@
+void slow_copy_array(VALUE_TYPE* dst, const VALUE_TYPE* src, INDEX_TYPE size) {
+  for (INDEX_TYPE index = 0; index < size; ++index) {
+    dst[index] = src[index];
+  }
+}

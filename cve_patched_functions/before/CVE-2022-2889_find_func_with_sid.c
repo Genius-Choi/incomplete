@@ -1,0 +1,14 @@
+find_func_with_sid(char_u *name, int sid)
+{
+    hashitem_T	    *hi;
+    char_u	    buffer[MAX_FUNC_NAME_LEN];
+
+    if (!SCRIPT_ID_VALID(sid))
+	return NULL;	// not in a script
+
+    func_name_with_sid(name, sid, buffer);
+    hi = hash_find(&func_hashtab, buffer);
+    if (!HASHITEM_EMPTY(hi))
+	return HI2UF(hi);
+    return NULL;
+}

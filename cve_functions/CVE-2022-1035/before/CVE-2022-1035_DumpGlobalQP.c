@@ -1,0 +1,17 @@
+static GF_Err DumpGlobalQP(GF_SceneDumper *sdump, GF_Command *com)
+{
+	GF_CommandField *inf;
+	if (!gf_list_count(com->command_fields)) return GF_OK;
+	inf = (GF_CommandField *) gf_list_get(com->command_fields, 0);
+
+	DUMP_IND(sdump);
+	if (sdump->XMLDump) {
+		gf_fprintf(sdump->trace, "<Replace extended=\"globalQuant\">\n");
+	} else {
+		gf_fprintf(sdump->trace, "GLOBALQP ");
+	}
+	gf_dump_vrml_node(sdump, inf->new_node, 0, NULL);
+	if (sdump->XMLDump) gf_fprintf(sdump->trace, "</Replace>\n");
+	else gf_fprintf(sdump->trace, "\n");
+	return GF_OK;
+}

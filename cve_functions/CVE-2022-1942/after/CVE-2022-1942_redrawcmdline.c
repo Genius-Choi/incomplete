@@ -1,0 +1,4 @@
+redrawcmdline(void)
+{
+    redrawcmdline_ex(TRUE);
+}

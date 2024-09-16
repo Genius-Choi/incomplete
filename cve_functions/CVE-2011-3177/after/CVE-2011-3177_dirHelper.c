@@ -1,0 +1,24 @@
+int IniSection::dirHelper (const YCPPath&p, YCPList&out,int get_sect,int depth)
+{
+    if (depth >= p->length())
+    {
+	return myDir (out, get_sect? SECTION: VALUE);
+    }
+
+    // recurse
+    string k = ip->changeCase (p->component_str (depth));
+
+    pair <IniSectionIdxIterator, IniSectionIdxIterator> r =
+	isections.equal_range (k);
+    IniSectionIdxIterator xi = r.first, xe = r.second;
+
+    if (xi != xe)
+    {
+	// there's something
+	IniSection& s = (--xe)->second->s ();
+	return s.dirHelper (p, out, get_sect, depth+1);
+    }
+    //error
+    y2debug ("Dir: Invalid path %s [%d]", p->toString().c_str(), depth);
+    return -1;
+}

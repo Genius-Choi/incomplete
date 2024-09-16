@@ -1,0 +1,23 @@
+didset_options(void)
+{
+    // initialize the table for 'iskeyword' et.al.
+    (void)init_chartab();
+
+    didset_string_options();
+
+#ifdef FEAT_SPELL
+    (void)spell_check_msm();
+    (void)spell_check_sps();
+    (void)compile_cap_prog(curwin->w_s);
+    (void)did_set_spell_option(TRUE);
+#endif
+#ifdef FEAT_CMDWIN
+    // set cedit_key
+    (void)check_cedit();
+#endif
+#ifdef FEAT_LINEBREAK
+    // initialize the table for 'breakat'.
+    fill_breakat_flags();
+#endif
+    after_copy_winopt(curwin);
+}

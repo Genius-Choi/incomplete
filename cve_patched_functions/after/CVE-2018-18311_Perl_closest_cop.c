@@ -1,0 +1,37 @@
+Perl_closest_cop(pTHX_ const COP *cop, const OP *o, const OP *curop,
+		       bool opnext)
+{
+    /* Look for curop starting from o.  cop is the last COP we've seen. */
+    /* opnext means that curop is actually the ->op_next of the op we are
+       seeking. */
+
+    PERL_ARGS_ASSERT_CLOSEST_COP;
+
+    if (!o || !curop || (
+	opnext ? o->op_next == curop && o->op_type != OP_SCOPE : o == curop
+    ))
+	return cop;
+
+    if (o->op_flags & OPf_KIDS) {
+	const OP *kid;
+	for (kid = cUNOPo->op_first; kid; kid = OpSIBLING(kid)) {
+	    const COP *new_cop;
+
+	    /* If the OP_NEXTSTATE has been optimised away we can still use it
+	     * the get the file and line number. */
+
+	    if (kid->op_type == OP_NULL && kid->op_targ == OP_NEXTSTATE)
+		cop = (const COP *)kid;
+
+	    /* Keep searching, and return when we've found something. */
+
+	    new_cop = closest_cop(cop, kid, curop, opnext);
+	    if (new_cop)
+		return new_cop;
+	}
+    }
+
+    /* Nothing found. */
+
+    return NULL;
+}

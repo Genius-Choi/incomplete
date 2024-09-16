@@ -1,0 +1,9 @@
+set_insstart(linenr_T lnum, int col)
+{
+    Insstart.lnum = lnum;
+    Insstart.col = col;
+    Insstart_orig = Insstart;
+    Insstart_textlen = Insstart.col;
+    Insstart_blank_vcol = MAXCOL;
+    arrow_used = FALSE;
+}

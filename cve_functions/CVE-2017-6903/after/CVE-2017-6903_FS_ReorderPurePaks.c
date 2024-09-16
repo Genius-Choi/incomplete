@@ -1,0 +1,32 @@
+static void FS_ReorderPurePaks()
+{
+	searchpath_t *s;
+	int i;
+	searchpath_t **p_insert_index, // for linked list reordering
+		**p_previous; // when doing the scan
+
+	// only relevant when connected to pure server
+	if ( !fs_numServerPaks )
+		return;
+
+	fs_reordered = qfalse;
+
+	p_insert_index = &fs_searchpaths; // we insert in order at the beginning of the list
+	for ( i = 0 ; i < fs_numServerPaks ; i++ ) {
+		p_previous = p_insert_index; // track the pointer-to-current-item
+		for (s = *p_insert_index; s; s = s->next) {
+			// the part of the list before p_insert_index has been sorted already
+			if (s->pack && fs_serverPaks[i] == s->pack->checksum) {
+				fs_reordered = qtrue;
+				// move this element to the insert list
+				*p_previous = s->next;
+				s->next = *p_insert_index;
+				*p_insert_index = s;
+				// increment insert list
+				p_insert_index = &s->next;
+				break; // iterate to next server pack
+			}
+			p_previous = &s->next;
+		}
+	}
+}

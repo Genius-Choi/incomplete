@@ -1,0 +1,3 @@
+bool CModules::OnChanBufferPlayMessage(CMessage& Message) {
+    MODHALTCHK(OnChanBufferPlayMessage(Message));
+}

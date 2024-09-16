@@ -1,0 +1,26 @@
+static void setDefaults(instanceConf_t* info) {
+    info->type            = -1;
+    info->action          = -1;
+    info->description     = NULL;
+    info->sndHWM          = -1;
+    info->rcvHWM          = -1;
+    info->identity        = NULL;
+    info->subscriptions   = NULL;
+    info->pszBindRuleset  = NULL;
+    info->pBindRuleset    = NULL;
+    info->sndBuf          = -1;
+    info->rcvBuf          = -1;
+    info->linger          = -1;
+    info->backlog         = -1;
+    info->sndTimeout      = -1;
+    info->rcvTimeout      = -1;
+    info->maxMsgSize      = -1;
+    info->rate            = -1;
+    info->recoveryIVL     = -1;
+    info->multicastHops   = -1;
+    info->reconnectIVL    = -1;
+    info->reconnectIVLMax = -1;
+    info->ipv4Only        = -1;
+    info->affinity        = -1;
+    info->next            = NULL;
+};

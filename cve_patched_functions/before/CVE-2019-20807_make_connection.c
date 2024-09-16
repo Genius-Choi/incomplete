@@ -1,0 +1,13 @@
+make_connection(void)
+{
+    if (X_DISPLAY == NULL
+# ifdef FEAT_GUI
+	    && !gui.in_use
+# endif
+	    )
+    {
+	x_force_connect = TRUE;
+	setup_term_clip();
+	x_force_connect = FALSE;
+    }
+}

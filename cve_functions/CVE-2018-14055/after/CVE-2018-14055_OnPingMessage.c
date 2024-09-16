@@ -1,0 +1,6 @@
+bool CIRCSock::OnPingMessage(CMessage& Message) {
+    // Generate a reply and don't forward this to any user,
+    // we don't want any PING forwarded
+    PutIRCQuick("PONG " + Message.GetParam(0));
+    return true;
+}

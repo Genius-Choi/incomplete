@@ -1,0 +1,1 @@
+static inline void switch_to_bitmap(unsigned long tifp) { }

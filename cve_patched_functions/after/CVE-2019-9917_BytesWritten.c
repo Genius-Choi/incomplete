@@ -1,0 +1,7 @@
+unsigned long long CUser::BytesWritten() const {
+    unsigned long long uBytes = m_uBytesWritten;
+    for (const CIRCNetwork* pNetwork : m_vIRCNetworks) {
+        uBytes += pNetwork->BytesWritten();
+    }
+    return uBytes;
+}

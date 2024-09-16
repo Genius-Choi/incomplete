@@ -1,0 +1,37 @@
+viminfo_filename(char_u *file)
+{
+    if (file == NULL || *file == NUL)
+    {
+	if (*p_viminfofile != NUL)
+	    file = p_viminfofile;
+	else if ((file = find_viminfo_parameter('n')) == NULL || *file == NUL)
+	{
+#ifdef VIMINFO_FILE2
+# ifdef VMS
+	    if (mch_getenv((char_u *)"SYS$LOGIN") == NULL)
+# else
+#  ifdef MSWIN
+	    /* Use $VIM only if $HOME is the default "C:/". */
+	    if (STRCMP(vim_getenv((char_u *)"HOME", NULL), "C:/") == 0
+		    && mch_getenv((char_u *)"HOME") == NULL)
+#  else
+	    if (mch_getenv((char_u *)"HOME") == NULL)
+#  endif
+# endif
+	    {
+		/* don't use $VIM when not available. */
+		expand_env((char_u *)"$VIM", NameBuff, MAXPATHL);
+		if (STRCMP("$VIM", NameBuff) != 0)  /* $VIM was expanded */
+		    file = (char_u *)VIMINFO_FILE2;
+		else
+		    file = (char_u *)VIMINFO_FILE;
+	    }
+	    else
+#endif
+		file = (char_u *)VIMINFO_FILE;
+	}
+	expand_env(file, NameBuff, MAXPATHL);
+	file = NameBuff;
+    }
+    return vim_strsave(file);
+}

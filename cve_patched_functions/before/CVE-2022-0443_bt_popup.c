@@ -1,0 +1,5 @@
+bt_popup(buf_T *buf)
+{
+    return buf != NULL && buf->b_p_bt != NULL
+	&& buf->b_p_bt[0] == 'p' && buf->b_p_bt[1] == 'o';
+}

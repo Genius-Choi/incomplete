@@ -1,0 +1,6 @@
+static u32 adjust_tsc_khz(u32 khz, s32 ppm)
+{
+	u64 v = (u64)khz * (1000000 + ppm);
+	do_div(v, 1000000);
+	return v;
+}

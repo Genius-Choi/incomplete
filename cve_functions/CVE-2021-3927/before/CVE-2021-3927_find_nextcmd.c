@@ -1,0 +1,10 @@
+find_nextcmd(char_u *p)
+{
+    while (*p != '|' && *p != '\n')
+    {
+	if (*p == NUL)
+	    return NULL;
+	++p;
+    }
+    return (p + 1);
+}

@@ -1,0 +1,27 @@
+cmp_remote_with_prioritized (gconstpointer a,
+                             gconstpointer b,
+                             gpointer      user_data)
+{
+  RemoteSortData *rsd = user_data;
+  FlatpakDir *self = rsd->dir;
+  const char *a_name = *(const char **) a;
+  const char *b_name = *(const char **) b;
+  int prio_a, prio_b;
+
+  prio_a = flatpak_dir_get_remote_prio (self, a_name);
+  prio_b = flatpak_dir_get_remote_prio (self, b_name);
+
+  /* Here we are assuming the array is already sorted by cmp_remote() and only
+   * putting a particular remote at the top of its priority level */
+  if (prio_b != prio_a)
+    return prio_b - prio_a;
+  else
+    {
+      if (strcmp (a_name, rsd->prioritized_remote) == 0)
+        return -1;
+      if (strcmp (b_name, rsd->prioritized_remote) == 0)
+        return 1;
+    }
+
+  return 0;
+}

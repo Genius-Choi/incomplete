@@ -1,0 +1,22 @@
+flatpak_dir_get_property (GObject    *object,
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
+{
+  FlatpakDir *self = FLATPAK_DIR (object);
+
+  switch (prop_id)
+    {
+    case PROP_PATH:
+      g_value_set_object (value, self->basedir);
+      break;
+
+    case PROP_USER:
+      g_value_set_boolean (value, self->user);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}

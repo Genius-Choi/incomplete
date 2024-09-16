@@ -1,0 +1,5 @@
+flatpak_bwrap_unset_env (FlatpakBwrap *bwrap,
+                         const char   *variable)
+{
+  bwrap->envp = g_environ_unsetenv (bwrap->envp, variable);
+}

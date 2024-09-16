@@ -1,0 +1,51 @@
+f_settagstack(typval_T *argvars, typval_T *rettv)
+{
+    static char *e_invact2 = N_("E962: Invalid action: '%s'");
+    win_T	*wp;
+    dict_T	*d;
+    int		action = 'r';
+
+    rettv->vval.v_number = -1;
+
+    // first argument: window number or id
+    wp = find_win_by_nr_or_id(&argvars[0]);
+    if (wp == NULL)
+	return;
+
+    // second argument: dict with items to set in the tag stack
+    if (argvars[1].v_type != VAR_DICT)
+    {
+	emsg(_(e_dictreq));
+	return;
+    }
+    d = argvars[1].vval.v_dict;
+    if (d == NULL)
+	return;
+
+    // third argument: action - 'a' for append and 'r' for replace.
+    // default is to replace the stack.
+    if (argvars[2].v_type == VAR_UNKNOWN)
+	action = 'r';
+    else if (argvars[2].v_type == VAR_STRING)
+    {
+	char_u	*actstr;
+	actstr = tv_get_string_chk(&argvars[2]);
+	if (actstr == NULL)
+	    return;
+	if ((*actstr == 'r' || *actstr == 'a') && actstr[1] == NUL)
+	    action = *actstr;
+	else
+	{
+	    semsg(_(e_invact2), actstr);
+	    return;
+	}
+    }
+    else
+    {
+	emsg(_(e_stringreq));
+	return;
+    }
+
+    if (set_tagstack(wp, d, action) == OK)
+	rettv->vval.v_number = 0;
+}

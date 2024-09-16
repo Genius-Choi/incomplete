@@ -1,0 +1,23 @@
+check_all_for_updates_cb (void *data)
+{
+  g_autoptr(GTask) task = g_task_new (NULL, NULL, NULL, NULL);
+
+  if (!opt_poll_when_metered &&
+      g_network_monitor_get_network_metered (network_monitor))
+    {
+      g_debug ("Skipping update check on metered network");
+
+      return G_SOURCE_CONTINUE;
+    }
+
+  g_debug ("Checking all update monitors");
+
+  G_LOCK (update_monitors);
+  update_monitors_timeout = 0;
+  update_monitors_timeout_running_thread = TRUE;
+  G_UNLOCK (update_monitors);
+
+  g_task_run_in_thread (task, check_all_for_updates_in_thread_func);
+
+  return G_SOURCE_REMOVE; /* This will be re-added by the thread when done */
+}

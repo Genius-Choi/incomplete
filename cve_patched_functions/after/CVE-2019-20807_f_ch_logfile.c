@@ -1,0 +1,14 @@
+f_ch_logfile(typval_T *argvars, typval_T *rettv UNUSED)
+{
+    char_u *fname;
+    char_u *opt = (char_u *)"";
+    char_u buf[NUMBUFLEN];
+
+    /* Don't open a file in restricted mode. */
+    if (check_restricted() || check_secure())
+	return;
+    fname = tv_get_string(&argvars[0]);
+    if (argvars[1].v_type == VAR_STRING)
+	opt = tv_get_string_buf(&argvars[1], buf);
+    ch_logfile(fname, opt);
+}

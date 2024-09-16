@@ -1,0 +1,4 @@
+get_user_cmd_complete(expand_T *xp UNUSED, int idx)
+{
+    return (char_u *)command_complete[idx].name;
+}

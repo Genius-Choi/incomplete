@@ -1,0 +1,4 @@
+flatpak_transaction_progress_done (FlatpakTransactionProgress *self)
+{
+  flatpak_progress_done (self->progress_obj);
+}

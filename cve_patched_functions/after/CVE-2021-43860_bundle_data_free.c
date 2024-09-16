@@ -1,0 +1,6 @@
+bundle_data_free (BundleData *data)
+{
+  g_clear_object (&data->file);
+  g_clear_object (&data->gpg_data);
+  g_free (data);
+}

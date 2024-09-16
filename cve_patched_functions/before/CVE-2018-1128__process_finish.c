@@ -1,0 +1,1 @@
+    void _process_finish(Message *m) override { }

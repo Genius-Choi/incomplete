@@ -1,0 +1,10 @@
+flatpak_xml_add (FlatpakXml *parent, FlatpakXml *node)
+{
+  node->parent = parent;
+
+  if (parent->first_child == NULL)
+    parent->first_child = node;
+  else
+    parent->last_child->next_sibling = node;
+  parent->last_child = node;
+}

@@ -1,0 +1,35 @@
+    void ReconnectUser(const CString& sLine) {
+        CString sUserName = sLine.Token(1);
+        CString sNetwork = sLine.Token(2);
+
+        if (sNetwork.empty()) {
+            PutModule(t_s("Usage: Reconnect <username> <network>"));
+            return;
+        }
+
+        CUser* pUser = FindUser(sUserName);
+        if (!pUser) {
+            return;
+        }
+
+        CIRCNetwork* pNetwork = FindNetwork(pUser, sNetwork);
+        if (!pNetwork) {
+            return;
+        }
+
+        CIRCSock* pIRCSock = pNetwork->GetIRCSock();
+        // cancel connection attempt:
+        if (pIRCSock && !pIRCSock->IsConnected()) {
+            pIRCSock->Close();
+        }
+        // or close existing connection:
+        else if (pIRCSock) {
+            pIRCSock->Quit();
+        }
+
+        // then reconnect
+        pNetwork->SetIRCConnectEnabled(true);
+
+        PutModule(t_f("Queued network {1} of user {2} for a reconnect.")(
+            pNetwork->GetName(), pUser->GetUserName()));
+    }

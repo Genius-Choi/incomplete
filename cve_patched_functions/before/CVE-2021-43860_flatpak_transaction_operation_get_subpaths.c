@@ -1,0 +1,7 @@
+flatpak_transaction_operation_get_subpaths (FlatpakTransactionOperation *self)
+{
+  if (self->subpaths == NULL || self->subpaths[0] == NULL)
+    return NULL;
+
+  return (const char * const *) self->subpaths;
+}

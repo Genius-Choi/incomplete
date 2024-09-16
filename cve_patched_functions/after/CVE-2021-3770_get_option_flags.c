@@ -1,0 +1,4 @@
+get_option_flags(int opt_idx)
+{
+    return options[opt_idx].flags;
+}

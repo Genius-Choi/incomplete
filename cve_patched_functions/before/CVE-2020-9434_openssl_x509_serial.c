@@ -1,0 +1,45 @@
+static int openssl_x509_serial(lua_State *L)
+{
+  X509* cert = CHECK_OBJECT(1, X509, "openssl.x509");
+  ASN1_INTEGER *serial = X509_get_serialNumber(cert);
+  if (lua_isboolean(L, 2))
+  {
+    int asobj = lua_toboolean(L, 2);
+    if (asobj)
+    {
+      PUSH_ASN1_INTEGER(L, serial);
+    }
+    else
+    {
+      BIGNUM *bn = ASN1_INTEGER_to_BN(serial, NULL);
+      PUSH_OBJECT(bn, "openssl.bn");
+    }
+  }
+  else if (lua_isnone(L, 2))
+  {
+    BIGNUM *bn = ASN1_INTEGER_to_BN(serial, NULL);
+    char *tmp = BN_bn2hex(bn);
+    lua_pushstring(L, tmp);
+    OPENSSL_free(tmp);
+    BN_free(bn);
+  }
+  else
+  {
+    int ret;
+    if (auxiliar_getclassudata(L, "openssl.asn1_string", 2))
+    {
+      serial = CHECK_OBJECT(2, ASN1_STRING, "openssl.asn1_string");
+    }
+    else
+    {
+      BIGNUM *bn = BN_get(L, 2);
+      serial = BN_to_ASN1_INTEGER(bn, NULL);
+      BN_free(bn);
+    }
+    luaL_argcheck(L, serial != NULL, 2, "not accept");
+    ret = X509_set_serialNumber(cert, serial);
+    ASN1_INTEGER_free(serial);
+    return openssl_pushresult(L, ret);
+  }
+  return 1;
+}

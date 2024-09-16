@@ -1,0 +1,30 @@
+set_ref_in_list_items(list_T *l, int copyID, ht_stack_T **ht_stack)
+{
+    listitem_T	 *li;
+    int		 abort = FALSE;
+    list_T	 *cur_l;
+    list_stack_T *list_stack = NULL;
+    list_stack_T *tempitem;
+
+    cur_l = l;
+    for (;;)
+    {
+	if (!abort && cur_l->lv_first != &range_list_item)
+	    // Mark each item in the list.  If the item contains a hashtab
+	    // it is added to ht_stack, if it contains a list it is added to
+	    // list_stack.
+	    for (li = cur_l->lv_first; !abort && li != NULL; li = li->li_next)
+		abort = abort || set_ref_in_item(&li->li_tv, copyID,
+						       ht_stack, &list_stack);
+	if (list_stack == NULL)
+	    break;
+
+	// take an item from the stack
+	cur_l = list_stack->list;
+	tempitem = list_stack;
+	list_stack = list_stack->prev;
+	free(tempitem);
+    }
+
+    return abort;
+}

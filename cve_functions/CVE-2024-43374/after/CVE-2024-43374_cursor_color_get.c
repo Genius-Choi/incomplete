@@ -1,0 +1,4 @@
+cursor_color_get(char_u *color)
+{
+    return (color == NULL) ? (char_u *)"" : color;
+}

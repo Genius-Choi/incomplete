@@ -1,0 +1,18 @@
+void CIRCNetwork::SetUser(CUser* pUser) {
+    for (CClient* pClient : m_vClients) {
+        pClient->PutStatus(
+            t_s("This network is being deleted or moved to another user."));
+        pClient->SetNetwork(nullptr);
+    }
+
+    m_vClients.clear();
+
+    if (m_pUser) {
+        m_pUser->RemoveNetwork(this);
+    }
+
+    m_pUser = pUser;
+    if (m_pUser) {
+        m_pUser->AddNetwork(this);
+    }
+}

@@ -1,0 +1,19 @@
+static GF_Err DumpProtoInsert(GF_SceneDumper *sdump, GF_Command *com)
+{
+	DUMP_IND(sdump);
+	if (sdump->XMLDump) {
+		gf_fprintf(sdump->trace, "<Insert extended=\"proto\">\n");
+	} else {
+		gf_fprintf(sdump->trace, "INSERTPROTO [\n");
+	}
+	sdump->indent++;
+	DumpProtos(sdump, com->new_proto_list);
+	sdump->indent--;
+	DUMP_IND(sdump);
+	if (sdump->XMLDump) {
+		gf_fprintf(sdump->trace, "</Insert>\n");
+	} else {
+		gf_fprintf(sdump->trace, "]\n");
+	}
+	return GF_OK;
+}

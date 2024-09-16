@@ -1,0 +1,8 @@
+void CL_SendPureChecksums( void ) {
+	char cMsg[MAX_INFO_VALUE];
+
+	// if we are pure we need to send back a command with our referenced pk3 checksums
+	Com_sprintf(cMsg, sizeof(cMsg), "cp %s", FS_ReferencedPakPureChecksums());
+
+	CL_AddReliableCommand( cMsg, qfalse );
+}

@@ -1,0 +1,4 @@
+list_win_vars(int *first)
+{
+    list_hashtable_vars(&curwin->w_vars->dv_hashtab, "w:", TRUE, first);
+}

@@ -1,0 +1,23 @@
+flatpak_dir_class_init (FlatpakDirClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->get_property = flatpak_dir_get_property;
+  object_class->set_property = flatpak_dir_set_property;
+  object_class->finalize = flatpak_dir_finalize;
+
+  g_object_class_install_property (object_class,
+                                   PROP_USER,
+                                   g_param_spec_boolean ("user",
+                                                         "",
+                                                         "",
+                                                         FALSE,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+  g_object_class_install_property (object_class,
+                                   PROP_PATH,
+                                   g_param_spec_object ("path",
+                                                        "",
+                                                        "",
+                                                        G_TYPE_FILE,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}

@@ -1,0 +1,6 @@
+eval_to_string(
+    char_u	*arg,
+    int		convert)
+{
+    return eval_to_string_eap(arg, convert, NULL);
+}

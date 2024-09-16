@@ -1,0 +1,32 @@
+validate_cursor_col(void)
+{
+    colnr_T off;
+    colnr_T col;
+    int     width;
+
+    validate_virtcol();
+    if (!(curwin->w_valid & VALID_WCOL))
+    {
+	col = curwin->w_virtcol;
+	off = curwin_col_off();
+	col += off;
+	width = curwin->w_width - off + curwin_col_off2();
+
+	// long line wrapping, adjust curwin->w_wrow
+	if (curwin->w_p_wrap
+		&& col >= (colnr_T)curwin->w_width
+		&& width > 0)
+	    // use same formula as what is used in curs_columns()
+	    col -= ((col - curwin->w_width) / width + 1) * width;
+	if (col > (int)curwin->w_leftcol)
+	    col -= curwin->w_leftcol;
+	else
+	    col = 0;
+	curwin->w_wcol = col;
+
+	curwin->w_valid |= VALID_WCOL;
+#ifdef FEAT_PROP_POPUP
+	curwin->w_flags &= ~WFLAG_WCOL_OFF_ADDED;
+#endif
+    }
+}

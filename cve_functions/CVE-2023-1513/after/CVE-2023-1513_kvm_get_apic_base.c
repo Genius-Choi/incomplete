@@ -1,0 +1,4 @@
+u64 kvm_get_apic_base(struct kvm_vcpu *vcpu)
+{
+	return vcpu->arch.apic_base;
+}

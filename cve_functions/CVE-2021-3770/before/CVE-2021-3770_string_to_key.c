@@ -1,0 +1,10 @@
+string_to_key(char_u *arg, int multi_byte)
+{
+    if (*arg == '<')
+	return find_key_option(arg + 1, TRUE);
+    if (*arg == '^')
+	return Ctrl_chr(arg[1]);
+    if (multi_byte)
+	return PTR2CHAR(arg);
+    return *arg;
+}

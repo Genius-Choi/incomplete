@@ -1,0 +1,33 @@
+flatpak_g_date_time_new_from_iso8601 (const gchar *text, GTimeZone *default_tz)
+{
+  gint length, date_length = -1;
+  gint hour = 0, minute = 0;
+  gdouble seconds = 0.0;
+  GTimeZone *tz = NULL;
+  GDateTime *datetime = NULL;
+
+  g_return_val_if_fail (text != NULL, NULL);
+
+  /* Count length of string and find date / time separator ('T', 't', or ' ') */
+  for (length = 0; text[length] != '\0'; length++)
+    {
+      if (date_length < 0 && (text[length] == 'T' || text[length] == 't' || text[length] == ' '))
+        date_length = length;
+    }
+
+  if (date_length < 0)
+    return NULL;
+
+  if (!parse_iso8601_time (text + date_length + 1, length - (date_length + 1),
+                           &hour, &minute, &seconds, &tz))
+    goto out;
+  if (tz == NULL && default_tz == NULL)
+    return NULL;
+
+  datetime = parse_iso8601_date (text, date_length, hour, minute, seconds, tz ? tz : default_tz);
+
+out:
+  if (tz != NULL)
+    g_time_zone_unref (tz);
+  return datetime;
+}

@@ -1,0 +1,4 @@
+eval_fname_sid(char_u *p)
+{
+    return (*p == 's' || TOUPPER_ASC(p[2]) == 'I');
+}

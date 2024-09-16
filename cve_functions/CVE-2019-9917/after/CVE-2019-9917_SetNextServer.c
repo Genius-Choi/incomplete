@@ -1,0 +1,10 @@
+bool CIRCNetwork::SetNextServer(const CServer* pServer) {
+    for (unsigned int a = 0; a < m_vServers.size(); a++) {
+        if (m_vServers[a] == pServer) {
+            m_uServerIdx = a;
+            return true;
+        }
+    }
+
+    return false;
+}

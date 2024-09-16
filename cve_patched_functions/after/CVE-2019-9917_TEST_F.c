@@ -1,0 +1,29 @@
+TEST_F(ZNCTest, ModperlNV) {
+    if (QProcessEnvironment::systemEnvironment().value(
+            "DISABLED_ZNC_PERL_PYTHON_TEST") == "1") {
+        return;
+    }
+    auto znc = Run();
+    znc->CanLeak();
+
+    InstallModule("test.pm", R"(
+        package test;
+        use base 'ZNC::Module';
+        sub OnLoad {
+            my $self = shift;
+            $self->SetNV('a', 'X');
+            $self->NV->{b} = 'Y';
+            my @k = keys %{$self->NV};
+            $self->PutModule("@k");
+            return $ZNC::CONTINUE;
+        }
+
+        1;
+    )");
+
+    auto ircd = ConnectIRCd();
+    auto client = LoginClient();
+    client.Write("znc loadmod modperl");
+    client.Write("znc loadmod test");
+    client.ReadUntil(":a b");
+}

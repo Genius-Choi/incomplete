@@ -1,0 +1,30 @@
+evalvars_clear(void)
+{
+    int		    i;
+    struct vimvar   *p;
+
+    for (i = 0; i < VV_LEN; ++i)
+    {
+	p = &vimvars[i];
+	if (p->vv_di.di_tv.v_type == VAR_STRING)
+	    VIM_CLEAR(p->vv_str);
+	else if (p->vv_di.di_tv.v_type == VAR_LIST)
+	{
+	    list_unref(p->vv_list);
+	    p->vv_list = NULL;
+	}
+    }
+    hash_clear(&vimvarht);
+    hash_init(&vimvarht);  // garbage_collect() will access it
+    hash_clear(&compat_hashtab);
+
+    // global variables
+    vars_clear(&globvarht);
+
+    // Script-local variables. Clear all the variables here.
+    // The scriptvar_T is cleared later in free_scriptnames(), because a
+    // variable in one script might hold a reference to the whole scope of
+    // another script.
+    for (i = 1; i <= script_items.ga_len; ++i)
+	vars_clear(&SCRIPT_VARS(i));
+}

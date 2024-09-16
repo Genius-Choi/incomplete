@@ -1,0 +1,14 @@
+    void UnLoadModuleForUser(const CString& sLine) {
+        CString sUsername = sLine.Token(1);
+        CString sModName = sLine.Token(2);
+
+        if (sModName.empty()) {
+            PutModule(t_s("Usage: UnloadModule <username> <modulename>"));
+            return;
+        }
+
+        CUser* pUser = FindUser(sUsername);
+        if (!pUser) return;
+
+        UnLoadModuleFor(pUser->GetModules(), sModName, pUser);
+    }

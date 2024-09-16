@@ -1,0 +1,4 @@
+ex_abclear(exarg_T *eap)
+{
+    map_clear(eap->cmd, eap->arg, TRUE, TRUE);
+}

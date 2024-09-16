@@ -1,0 +1,12 @@
+FileDescr::FileDescr (char*fn_)
+{
+    fn = fn_;
+    sn = fn_;
+    struct stat st;
+    if (stat(fn_, &st))
+    {
+	y2error("Unable to stat '%s': %s", fn_, strerror(errno));
+	timestamp = 0;
+    }
+    timestamp = st.st_mtime;
+}

@@ -1,0 +1,4 @@
+latin_off2cells(unsigned off UNUSED, unsigned max_off UNUSED)
+{
+    return 1;
+}

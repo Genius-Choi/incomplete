@@ -1,0 +1,4 @@
+may_break_in_function(ufunc_T *ufunc)
+{
+    return ufunc->uf_has_breakpoint || debug_has_expr_breakpoint();
+}

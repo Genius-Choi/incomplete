@@ -1,0 +1,23 @@
+intable(struct interval *table, size_t size, int c)
+{
+    int mid, bot, top;
+
+    // first quick check for Latin1 etc. characters
+    if (c < table[0].first)
+	return FALSE;
+
+    // binary search in table
+    bot = 0;
+    top = (int)(size / sizeof(struct interval) - 1);
+    while (top >= bot)
+    {
+	mid = (bot + top) / 2;
+	if (table[mid].last < c)
+	    bot = mid + 1;
+	else if (table[mid].first > c)
+	    top = mid - 1;
+	else
+	    return TRUE;
+    }
+    return FALSE;
+}

@@ -1,0 +1,11 @@
+DNP3_Base::DNP3_Base(analyzer::Analyzer* arg_analyzer)
+	{
+	analyzer = arg_analyzer;
+	interp = new binpac::DNP3::DNP3_Conn(analyzer);
+
+	ClearEndpointState(true);
+	ClearEndpointState(false);
+
+	if ( ! crc_table_initialized )
+		PrecomputeCRCTable();
+	}

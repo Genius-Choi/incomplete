@@ -1,0 +1,4 @@
+f_win_getid(typval_T *argvars, typval_T *rettv)
+{
+    rettv->vval.v_number = win_getid(argvars);
+}

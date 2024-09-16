@@ -1,0 +1,4 @@
+CString CZNC::GetUptime() const {
+    time_t now = time(nullptr);
+    return CString::ToTimeStr(now - TimeStarted());
+}

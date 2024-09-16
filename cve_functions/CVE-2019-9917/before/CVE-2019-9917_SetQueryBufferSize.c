@@ -1,0 +1,10 @@
+bool CUser::SetQueryBufferSize(unsigned int u, bool bForce) {
+    if (!bForce && u > CZNC::Get().GetMaxBufferSize()) return false;
+    for (CIRCNetwork* pNetwork : m_vIRCNetworks) {
+        for (CQuery* pQuery : pNetwork->GetQueries()) {
+            pQuery->SetBufferCount(u, bForce);
+        }
+    }
+    m_uQueryBufferSize = u;
+    return true;
+}

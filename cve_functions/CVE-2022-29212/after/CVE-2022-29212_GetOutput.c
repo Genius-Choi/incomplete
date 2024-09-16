@@ -1,0 +1,1 @@
+  std::vector<bool> GetOutput() { return ExtractVector<bool>(output_); }

@@ -1,0 +1,7 @@
+flatpak_dir_ref_is_masked (FlatpakDir *self,
+                           const char *ref)
+{
+  g_autoptr(GRegex) masked = flatpak_dir_get_mask_regexp (self);
+
+  return !flatpak_filters_allow_ref (NULL, masked, ref);
+}

@@ -1,0 +1,4 @@
+has_varargs(ufunc_T *ufunc)
+{
+    return ufunc->uf_varargs || ufunc->uf_va_name != NULL;
+}

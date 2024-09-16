@@ -1,0 +1,9 @@
+void MemoryManager::enter_process_paging_scope(Process& process)
+{
+    ASSERT(current);
+    InterruptDisabler disabler;
+
+    current->tss().cr3 = process.page_directory().cr3();
+    asm volatile("movl %%eax, %%cr3" ::"a"(process.page_directory().cr3())
+                 : "memory");
+}

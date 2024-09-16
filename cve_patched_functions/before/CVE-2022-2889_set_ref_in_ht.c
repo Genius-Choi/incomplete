@@ -1,0 +1,39 @@
+set_ref_in_ht(hashtab_T *ht, int copyID, list_stack_T **list_stack)
+{
+    int		todo;
+    int		abort = FALSE;
+    hashitem_T	*hi;
+    hashtab_T	*cur_ht;
+    ht_stack_T	*ht_stack = NULL;
+    ht_stack_T	*tempitem;
+
+    cur_ht = ht;
+    for (;;)
+    {
+	if (!abort)
+	{
+	    // Mark each item in the hashtab.  If the item contains a hashtab
+	    // it is added to ht_stack, if it contains a list it is added to
+	    // list_stack.
+	    todo = (int)cur_ht->ht_used;
+	    for (hi = cur_ht->ht_array; todo > 0; ++hi)
+		if (!HASHITEM_EMPTY(hi))
+		{
+		    --todo;
+		    abort = abort || set_ref_in_item(&HI2DI(hi)->di_tv, copyID,
+						       &ht_stack, list_stack);
+		}
+	}
+
+	if (ht_stack == NULL)
+	    break;
+
+	// take an item from the stack
+	cur_ht = ht_stack->ht;
+	tempitem = ht_stack;
+	ht_stack = ht_stack->prev;
+	free(tempitem);
+    }
+
+    return abort;
+}

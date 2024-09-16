@@ -1,0 +1,21 @@
+flatpak_dir_mark_changed (FlatpakDir *self,
+                          GError    **error)
+{
+  g_autoptr(GFile) changed_file = NULL;
+  g_autofree char * changed_path = NULL;
+
+  changed_file = flatpak_dir_get_changed_path (self);
+  changed_path = g_file_get_path (changed_file);
+
+  if (!g_utime (changed_path, NULL))
+    return TRUE;
+
+  if (errno != ENOENT)
+    return glnx_throw_errno (error);
+
+  if (!g_file_replace_contents (changed_file, "", 0, NULL, FALSE,
+                                G_FILE_CREATE_NONE, NULL, NULL, error))
+    return FALSE;
+
+  return TRUE;
+}

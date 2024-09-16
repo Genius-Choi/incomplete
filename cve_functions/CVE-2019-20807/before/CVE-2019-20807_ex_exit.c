@@ -1,0 +1,44 @@
+ex_exit(exarg_T *eap)
+{
+#ifdef FEAT_CMDWIN
+    if (cmdwin_type != 0)
+    {
+	cmdwin_result = Ctrl_C;
+	return;
+    }
+#endif
+    /* Don't quit while editing the command line. */
+    if (text_locked())
+    {
+	text_locked_msg();
+	return;
+    }
+
+    if (before_quit_autocmds(curwin, FALSE, eap->forceit))
+	return;
+
+    /*
+     * if more files or windows we won't exit
+     */
+    if (check_more(FALSE, eap->forceit) == OK && only_one_window())
+	exiting = TRUE;
+    if (       ((eap->cmdidx == CMD_wq
+		    || curbufIsChanged())
+		&& do_write(eap) == FAIL)
+	    || check_more(TRUE, eap->forceit) == FAIL
+	    || (only_one_window() && check_changed_any(eap->forceit, FALSE)))
+    {
+	not_exiting();
+    }
+    else
+    {
+	if (only_one_window())	    /* quit last window, exit Vim */
+	    getout(0);
+	not_exiting();
+# ifdef FEAT_GUI
+	need_mouse_correct = TRUE;
+# endif
+	/* Quit current window, may free the buffer. */
+	win_close(curwin, !buf_hide(curwin->w_buffer));
+    }
+}

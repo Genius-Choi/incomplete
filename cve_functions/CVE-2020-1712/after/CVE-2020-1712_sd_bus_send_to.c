@@ -1,0 +1,25 @@
+_public_ int sd_bus_send_to(sd_bus *bus, sd_bus_message *m, const char *destination, uint64_t *cookie) {
+        int r;
+
+        assert_return(m, -EINVAL);
+
+        if (!bus)
+                bus = m->bus;
+
+        assert_return(!bus_pid_changed(bus), -ECHILD);
+
+        if (!BUS_IS_OPEN(bus->state))
+                return -ENOTCONN;
+
+        if (!streq_ptr(m->destination, destination)) {
+
+                if (!destination)
+                        return -EEXIST;
+
+                r = sd_bus_message_set_destination(m, destination);
+                if (r < 0)
+                        return r;
+        }
+
+        return sd_bus_send(bus, m, cookie);
+}

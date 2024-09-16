@@ -1,0 +1,7 @@
+INTERNAL void vterm_push_output_sprintf(VTerm *vt, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vterm_push_output_vsprintf(vt, format, args);
+  va_end(args);
+}

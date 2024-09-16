@@ -1,0 +1,21 @@
+static void hevc_scaling_list_data(GF_BitStream *bs)
+{
+	u32 i, sizeId, matrixId;
+	for (sizeId = 0; sizeId < 4; sizeId++) {
+		for (matrixId=0; matrixId<6; matrixId += (sizeId == 3) ? 3:1 ) {
+			u32 scaling_list_pred_mode_flag_sizeId_matrixId = gf_bs_read_int(bs, 1);
+			if( ! scaling_list_pred_mode_flag_sizeId_matrixId ) {
+				/*scaling_list_pred_matrix_id_delta[ sizeId ][ matrixId ] =*/ bs_get_ue(bs);
+			} else {
+				//u32 nextCoef = 8;
+				u32 coefNum = MIN(64, (1 << (4+(sizeId << 1))));
+				if ( sizeId > 1 ) {
+					/*scaling_list_dc_coef_minus8[ sizeId − 2 ][ matrixId ] = */bs_get_se(bs);
+				}
+				for (i = 0; i<coefNum; i++) {
+					/*scaling_list_delta_coef = */bs_get_se(bs);
+				}
+			}
+		}
+	}
+}

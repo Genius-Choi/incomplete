@@ -1,0 +1,31 @@
+void CL_ShutdownAll( qboolean shutdownRef ) {
+	if(CL_VideoRecording())
+		CL_CloseAVI();
+
+	if(clc.demorecording)
+		CL_StopRecord_f();
+
+#if 0 //rwwFIXMEFIXME: Disable this before release!!!!!! I am just trying to find a crash bug.
+	//so it doesn't barf on shutdown saying refentities belong to each other
+	tr.refdef.num_entities = 0;
+#endif
+
+	// clear sounds
+	S_DisableSounds();
+	// shutdown CGame
+	CL_ShutdownCGame();
+	// shutdown UI
+	CL_ShutdownUI();
+
+	// shutdown the renderer
+	if(shutdownRef)
+		CL_ShutdownRef( qfalse );
+	if ( re && re->Shutdown ) {
+		re->Shutdown( qfalse, qfalse );		// don't destroy window or context
+	}
+
+	cls.uiStarted = qfalse;
+	cls.cgameStarted = qfalse;
+	cls.rendererStarted = qfalse;
+	cls.soundRegistered = qfalse;
+}

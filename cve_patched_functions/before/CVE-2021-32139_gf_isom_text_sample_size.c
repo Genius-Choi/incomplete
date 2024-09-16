@@ -1,0 +1,34 @@
+u32 gf_isom_text_sample_size(GF_TextSample *samp)
+{
+	GF_Box *a;
+	u32 i, size;
+	if (!samp) return 0;
+
+	size = 2 + samp->len;
+	if (samp->styles) {
+		gf_isom_box_size((GF_Box *)samp->styles);
+		size += (u32) samp->styles->size;
+	}
+	if (samp->highlight_color) {
+		gf_isom_box_size((GF_Box *)samp->highlight_color);
+		size += (u32) samp->highlight_color->size;
+	}
+	if (samp->scroll_delay) {
+		gf_isom_box_size((GF_Box *)samp->scroll_delay);
+		size += (u32) samp->scroll_delay->size;
+	}
+	if (samp->box) {
+		gf_isom_box_size((GF_Box *)samp->box);
+		size += (u32) samp->box->size;
+	}
+	if (samp->wrap) {
+		gf_isom_box_size((GF_Box *)samp->wrap);
+		size += (u32) samp->wrap->size;
+	}
+	i=0;
+	while ((a = (GF_Box*)gf_list_enum(samp->others, &i))) {
+		gf_isom_box_size((GF_Box *)a);
+		size += (u32) a->size;
+	}
+	return size;
+}

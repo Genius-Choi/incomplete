@@ -1,0 +1,12 @@
+diff_ensure_op (DiffData *data,
+                DiffOpKind kind)
+{
+  if (data->ops->len == 0 ||
+      g_array_index (data->ops, DiffOp, data->ops->len-1).kind != kind)
+    {
+      DiffOp op = {kind, 0};
+      g_array_append_val (data->ops, op);
+    }
+
+  return &g_array_index (data->ops, DiffOp, data->ops->len-1);
+}

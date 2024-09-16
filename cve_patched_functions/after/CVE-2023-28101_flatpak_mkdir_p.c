@@ -1,0 +1,10 @@
+flatpak_mkdir_p (GFile        *dir,
+                 GCancellable *cancellable,
+                 GError      **error)
+{
+  return glnx_shutil_mkdir_p_at (AT_FDCWD,
+                                 flatpak_file_get_path_cached (dir),
+                                 0777,
+                                 cancellable,
+                                 error);
+}

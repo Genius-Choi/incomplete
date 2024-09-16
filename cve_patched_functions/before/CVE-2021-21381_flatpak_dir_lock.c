@@ -1,0 +1,10 @@
+flatpak_dir_lock (FlatpakDir   *self,
+                  GLnxLockFile *lockfile,
+                  GCancellable *cancellable,
+                  GError      **error)
+{
+  g_autoptr(GFile) lock_file = g_file_get_child (flatpak_dir_get_path (self), "lock");
+  g_autofree char *lock_path = g_file_get_path (lock_file);
+
+  return glnx_make_lock_file (AT_FDCWD, lock_path, LOCK_EX, lockfile, error);
+}

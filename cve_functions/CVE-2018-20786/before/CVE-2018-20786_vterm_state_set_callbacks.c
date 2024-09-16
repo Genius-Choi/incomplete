@@ -1,0 +1,14 @@
+void vterm_state_set_callbacks(VTermState *state, const VTermStateCallbacks *callbacks, void *user)
+{
+  if(callbacks) {
+    state->callbacks = callbacks;
+    state->cbdata = user;
+
+    if(state->callbacks && state->callbacks->initpen)
+      (*state->callbacks->initpen)(state->cbdata);
+  }
+  else {
+    state->callbacks = NULL;
+    state->cbdata = NULL;
+  }
+}

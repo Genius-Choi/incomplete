@@ -1,0 +1,6 @@
+flatpak_dir_get_oci_summary_location (FlatpakDir *self,
+                                      const char *remote,
+                                      GError    **error)
+{
+  return flatpak_dir_get_oci_cache_file (self, remote, ".summary", error);
+}

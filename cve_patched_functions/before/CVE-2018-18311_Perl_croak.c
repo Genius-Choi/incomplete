@@ -1,0 +1,8 @@
+Perl_croak(pTHX_ const char *pat, ...)
+{
+    va_list args;
+    va_start(args, pat);
+    vcroak(pat, &args);
+    NOT_REACHED; /* NOTREACHED */
+    va_end(args);
+}

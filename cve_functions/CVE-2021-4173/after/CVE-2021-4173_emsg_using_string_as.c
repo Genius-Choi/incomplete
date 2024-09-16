@@ -1,0 +1,7 @@
+emsg_using_string_as(typval_T *tv, int as_number)
+{
+    semsg(_(as_number ? e_using_string_as_number_str
+						 : e_using_string_as_bool_str),
+		       tv->vval.v_string == NULL
+					   ? (char_u *)"" : tv->vval.v_string);
+}

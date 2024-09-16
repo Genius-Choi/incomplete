@@ -1,0 +1,11 @@
+restore_viewstate(viewstate_T *vs)
+{
+    curwin->w_curswant = vs->vs_curswant;
+    curwin->w_leftcol = vs->vs_leftcol;
+    curwin->w_topline = vs->vs_topline;
+# ifdef FEAT_DIFF
+    curwin->w_topfill = vs->vs_topfill;
+# endif
+    curwin->w_botline = vs->vs_botline;
+    curwin->w_empty_rows = vs->vs_empty_rows;
+}

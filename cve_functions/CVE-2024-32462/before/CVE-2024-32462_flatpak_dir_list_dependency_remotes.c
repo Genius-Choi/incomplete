@@ -1,0 +1,31 @@
+flatpak_dir_list_dependency_remotes (FlatpakDir   *self,
+                                     GCancellable *cancellable,
+                                     GError      **error)
+{
+  g_autoptr(GPtrArray) res = g_ptr_array_new_with_free_func (g_free);
+  g_auto(GStrv) remotes = NULL;
+  int i;
+
+  remotes = flatpak_dir_list_remotes (self, cancellable, error);
+  if (remotes == NULL)
+    return NULL;
+
+  for (i = 0; remotes != NULL && remotes[i] != NULL; i++)
+    {
+      const char *remote = remotes[i];
+
+      if (flatpak_dir_get_remote_disabled (self, remote))
+        continue;
+
+      if (flatpak_dir_get_remote_noenumerate (self, remote))
+        continue;
+
+      if (flatpak_dir_get_remote_nodeps (self, remote))
+        continue;
+
+      g_ptr_array_add (res, g_strdup (remote));
+    }
+
+  g_ptr_array_add (res, NULL);
+  return (char **) g_ptr_array_free (g_steal_pointer (&res), FALSE);
+}

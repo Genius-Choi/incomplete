@@ -1,0 +1,25 @@
+compile_assign_lhs(
+	char_u	*var_start,
+	lhs_T	*lhs,
+	int	cmdidx,
+	int	is_decl,
+	int	heredoc,
+	int	oplen,
+	cctx_T	*cctx)
+{
+    if (compile_lhs(var_start, lhs, cmdidx, heredoc, oplen, cctx) == FAIL)
+	return FAIL;
+
+    if (!lhs->lhs_has_index && lhs->lhs_lvar == &lhs->lhs_arg_lvar)
+    {
+	semsg(_(e_cannot_assign_to_argument), lhs->lhs_name);
+	return FAIL;
+    }
+    if (!is_decl && lhs->lhs_lvar != NULL
+			   && lhs->lhs_lvar->lv_const && !lhs->lhs_has_index)
+    {
+	semsg(_(e_cannot_assign_to_constant), lhs->lhs_name);
+	return FAIL;
+    }
+    return OK;
+}

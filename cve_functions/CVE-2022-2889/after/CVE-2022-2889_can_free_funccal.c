@@ -1,0 +1,7 @@
+can_free_funccal(funccall_T *fc, int copyID)
+{
+    return (fc->l_varlist.lv_copyID != copyID
+	    && fc->l_vars.dv_copyID != copyID
+	    && fc->l_avars.dv_copyID != copyID
+	    && fc->fc_copyID != copyID);
+}

@@ -1,0 +1,14 @@
+static GF_Err DumpRouteDelete(GF_SceneDumper *sdump, GF_Command *com)
+{
+	DUMP_IND(sdump);
+	if (sdump->XMLDump) {
+		gf_fprintf(sdump->trace, "<Delete atRoute=\"");
+		scene_dump_vrml_route_id(sdump, com->RouteID, com->def_name);
+		gf_fprintf(sdump->trace, "\"/>\n");
+	} else {
+		gf_fprintf(sdump->trace, "DELETE ROUTE ");
+		scene_dump_vrml_route_id(sdump, com->RouteID, com->def_name);
+		gf_fprintf(sdump->trace, "\n");
+	}
+	return GF_OK;
+}

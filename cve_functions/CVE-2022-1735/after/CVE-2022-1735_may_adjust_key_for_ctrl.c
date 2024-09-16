@@ -1,0 +1,15 @@
+may_adjust_key_for_ctrl(int modifiers, int key)
+{
+    if (modifiers & MOD_MASK_CTRL)
+    {
+	if (ASCII_ISALPHA(key))
+	    return TOUPPER_ASC(key);
+	if (key == '2')
+	    return '@';
+	if (key == '6')
+	    return '^';
+	if (key == '-')
+	    return '_';
+    }
+    return key;
+}
