@@ -1,0 +1,43 @@
+static void dump_pagetable(unsigned long address)
+{
+	pgd_t *base = __va(read_cr3() & PHYSICAL_PAGE_MASK);
+	pgd_t *pgd = base + pgd_index(address);
+	pud_t *pud;
+	pmd_t *pmd;
+	pte_t *pte;
+
+	if (bad_address(pgd))
+		goto bad;
+
+	printk("PGD %lx ", pgd_val(*pgd));
+
+	if (!pgd_present(*pgd))
+		goto out;
+
+	pud = pud_offset(pgd, address);
+	if (bad_address(pud))
+		goto bad;
+
+	printk("PUD %lx ", pud_val(*pud));
+	if (!pud_present(*pud) || pud_large(*pud))
+		goto out;
+
+	pmd = pmd_offset(pud, address);
+	if (bad_address(pmd))
+		goto bad;
+
+	printk("PMD %lx ", pmd_val(*pmd));
+	if (!pmd_present(*pmd) || pmd_large(*pmd))
+		goto out;
+
+	pte = pte_offset_kernel(pmd, address);
+	if (bad_address(pte))
+		goto bad;
+
+	printk("PTE %lx", pte_val(*pte));
+out:
+	printk("\n");
+	return;
+bad:
+	printk("BAD\n");
+}

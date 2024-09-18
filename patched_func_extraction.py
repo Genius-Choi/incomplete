@@ -1,16 +1,41 @@
-# Considering 4373 CVEs, 615567 functions
-# 307473 patched functions (before)
-# 308094 patched functions (after)
-# 912 functions do not have "end_line" field -> 다음 함수의 시작줄 -2 로 대체
-
 import subprocess
 import json
 import os
 import re
-from tqdm import tqdm
+import difflib
 
 missing_end_line_count = 0
-err_on_ctag_output = 0
+
+def compare_before_after_files(before_path, after_path):
+    with open(before_path, 'r') as before_file, open(after_path, 'r') as after_file:
+        before_lines = before_file.readlines()
+        after_lines = after_file.readlines()
+
+    differ = difflib.Differ()
+    diff = list(differ.compare(before_lines, after_lines))
+
+    deleted_lines = []
+    for i, line in enumerate(diff):
+        if line.startswith('- '):
+            deleted_lines.append(i + 1)  # +1 because line numbers start at 1
+
+    return deleted_lines
+
+def process_patched_functions():
+    before_dir = './cve_patched_functions/before'
+    after_dir = './cve_patched_functions/after'
+    results = {}
+
+    for filename in os.listdir(before_dir):
+        before_path = os.path.join(before_dir, filename)
+        after_path = os.path.join(after_dir, filename)
+
+        if os.path.isfile(after_path):
+            deleted_lines = compare_before_after_files(before_path, after_path)
+            if deleted_lines:
+                results[filename] = deleted_lines
+
+    return results
 
 def get_file_extension(file_path):
     _, extension = os.path.splitext(file_path)
@@ -23,7 +48,7 @@ def sanitize_filename(filename, max_length=200):
     # Truncate if too long
     # if len(filename) > max_length:
     #     filename = filename[:max_length]
-    # return filename
+    return filename
 
 def run_ctags(file_path):
     try:
@@ -32,7 +57,6 @@ def run_ctags(file_path):
         return result.stdout
     except subprocess.CalledProcessError as e:
         print(f"Error running ctags on {file_path}: {e}")
-        err_on_ctag_output += 1
         return None
 
 def parse_ctags_output(ctags_output, file_path):
@@ -56,7 +80,7 @@ def parse_ctags_output(ctags_output, file_path):
 
 def get_functions_from_file(file_path):
     global missing_end_line_count
-    functions = []  # Initialize an empty list
+    functions = []
     ctags_output = run_ctags(file_path)
     if ctags_output:
         functions = parse_ctags_output(ctags_output, file_path)
@@ -107,6 +131,7 @@ def parse_diff(diff_file):
                     changed_lines['after'].extend(range(after_start, after_end))
     return changed_lines
 
+
 def process_cve_folder(cve_folder, diff_file):
     changed_lines = parse_diff(diff_file)
     results = {'before': {}, 'after': {}}
@@ -138,47 +163,32 @@ def process_cve_folder(cve_folder, diff_file):
                             )
     return results
 
-# def main():
-#     root_folder = 'cve_code_changes'
-#     diff_folder = 'cve_diffs'
-#     all_results = {}
-    
-#     for cve_folder in os.listdir(root_folder):
-#         cve_path = os.path.join(root_folder, cve_folder)
-#         diff_file = os.path.join(diff_folder, cve_folder, 'commit_1.diff')
-#         if os.path.isdir(cve_path) and os.path.isfile(diff_file):
-#             print(f"Processing {cve_folder}...")
-#             all_results[cve_folder] = process_cve_folder(cve_path, diff_file)
-
-#     with open('cve_patched_functions_analysis.json', 'w') as f:
-#         json.dump(all_results, f, indent=2)
-
-#     print("Analysis complete. Results saved to 'cve_patched_functions_analysis.json'")
-#     print("Patched function code files saved in 'cve_patched_functions/before' and 'cve_patched_functions/after' directories")
-#     print(f"Missing endline field: {missing_end_line_count}")
-# if __name__ == "__main__":
-#     main()
-
 def main():
     root_folder = 'cve_code_changes'
     diff_folder = 'cve_diffs'
     all_results = {}
     
-    cve_folders = [f for f in os.listdir(root_folder) if os.path.isdir(os.path.join(root_folder, f))]
-    
-    for cve_folder in tqdm(cve_folders, desc="Processing CVEs"):
+    for cve_folder in os.listdir(root_folder):
         cve_path = os.path.join(root_folder, cve_folder)
         diff_file = os.path.join(diff_folder, cve_folder, 'commit_1.diff')
-        if os.path.isfile(diff_file):
+        if os.path.isdir(cve_path) and os.path.isfile(diff_file):
+            print(f"Processing {cve_folder}...")
             all_results[cve_folder] = process_cve_folder(cve_path, diff_file)
 
-    with open('../json_data/cve_patched_functions_analysis.json', 'w') as f:
+    with open('cve_patched_functions_analysis.json', 'w') as f:
         json.dump(all_results, f, indent=2)
 
-    print("Analysis complete. Results saved to '../json_data/cve_patched_functions_analysis.json'")
+    print("Analysis complete. Results saved to 'cve_patched_functions_analysis.json'")
     print("Patched function code files saved in 'cve_patched_functions/before' and 'cve_patched_functions/after' directories")
     print(f"Missing endline field: {missing_end_line_count}")
-    print(f"Err on catg output: {err_on_ctag_output}")
+
+
+    print("Analyzing patched functions...")
+    patched_function_results = process_patched_functions()
+    with open('../json_data/patched_function_analysis.json', 'w') as f:
+        json.dump(patched_function_results, f, indent=2)
+
+    print("Patched function analysis complete. Results saved to '../json_data/patched_function_analysis.json'")
 
 if __name__ == "__main__":
     main()

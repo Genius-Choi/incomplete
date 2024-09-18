@@ -1,0 +1,1 @@
+void CUser::SetQuitMsg(const CString& s) { m_sQuitMsg = s; }

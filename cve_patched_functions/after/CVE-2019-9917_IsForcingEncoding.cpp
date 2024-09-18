@@ -1,0 +1,1 @@
+bool CZNC::IsForcingEncoding() const { return m_uiForceEncoding; }

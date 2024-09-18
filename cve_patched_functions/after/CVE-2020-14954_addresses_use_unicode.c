@@ -1,0 +1,15 @@
+static bool addresses_use_unicode(const struct AddressList *al)
+{
+  if (!al)
+  {
+    return false;
+  }
+
+  struct Address *a = NULL;
+  TAILQ_FOREACH(a, al, entries)
+  {
+    if (a->mailbox && !a->group && address_uses_unicode(a->mailbox))
+      return true;
+  }
+  return false;
+}

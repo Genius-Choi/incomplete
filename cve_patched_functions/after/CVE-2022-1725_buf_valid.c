@@ -1,0 +1,11 @@
+buf_valid(buf_T *buf)
+{
+    buf_T	*bp;
+
+    // Assume that we more often have a recent buffer, start with the last
+    // one.
+    FOR_ALL_BUFS_FROM_LAST(bp)
+	if (bp == buf)
+	    return TRUE;
+    return FALSE;
+}
