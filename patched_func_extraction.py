@@ -10,6 +10,7 @@ import re
 from tqdm import tqdm
 
 missing_end_line_count = 0
+err_on_ctag_output = 0
 
 def get_file_extension(file_path):
     _, extension = os.path.splitext(file_path)
@@ -20,9 +21,9 @@ def sanitize_filename(filename, max_length=200):
     filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
     filename = filename.replace(' ', '_')
     # Truncate if too long
-    if len(filename) > max_length:
-        filename = filename[:max_length]
-    return filename
+    # if len(filename) > max_length:
+    #     filename = filename[:max_length]
+    # return filename
 
 def run_ctags(file_path):
     try:
@@ -31,6 +32,7 @@ def run_ctags(file_path):
         return result.stdout
     except subprocess.CalledProcessError as e:
         print(f"Error running ctags on {file_path}: {e}")
+        err_on_ctag_output += 1
         return None
 
 def parse_ctags_output(ctags_output, file_path):
@@ -105,7 +107,6 @@ def parse_diff(diff_file):
                     changed_lines['after'].extend(range(after_start, after_end))
     return changed_lines
 
-
 def process_cve_folder(cve_folder, diff_file):
     changed_lines = parse_diff(diff_file)
     results = {'before': {}, 'after': {}}
@@ -158,8 +159,6 @@ def process_cve_folder(cve_folder, diff_file):
 # if __name__ == "__main__":
 #     main()
 
-from tqdm import tqdm
-
 def main():
     root_folder = 'cve_code_changes'
     diff_folder = 'cve_diffs'
@@ -173,12 +172,13 @@ def main():
         if os.path.isfile(diff_file):
             all_results[cve_folder] = process_cve_folder(cve_path, diff_file)
 
-    with open('cve_patched_functions_analysis.json', 'w') as f:
+    with open('../json_data/cve_patched_functions_analysis.json', 'w') as f:
         json.dump(all_results, f, indent=2)
 
-    print("Analysis complete. Results saved to 'cve_patched_functions_analysis.json'")
+    print("Analysis complete. Results saved to '../json_data/cve_patched_functions_analysis.json'")
     print("Patched function code files saved in 'cve_patched_functions/before' and 'cve_patched_functions/after' directories")
     print(f"Missing endline field: {missing_end_line_count}")
+    print(f"Err on catg output: {err_on_ctag_output}")
 
 if __name__ == "__main__":
     main()
