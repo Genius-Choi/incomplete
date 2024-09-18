@@ -185,10 +185,10 @@ def main():
 
     print("Analyzing patched functions...")
     patched_function_results = process_patched_functions()
-    with open('../json_data/patched_function_analysis.json', 'w') as f:
+    with open('../json_data/patched_line_num.json', 'w') as f:
         json.dump(patched_function_results, f, indent=2)
 
-    print("Patched function analysis complete. Results saved to '../json_data/patched_function_analysis.json'")
+    print("Patched function analysis complete. Results saved to '../json_data/patched_line_num.json'")
 
 if __name__ == "__main__":
     main()
