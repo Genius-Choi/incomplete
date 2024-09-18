@@ -1,1 +1,0 @@
-static Jsi_StructSpec *jsi_csGetStructSpec(void* p) { Jsi_StructSpec *s = (typeof(s))p; SIGASSERT(s, OPTS_STRUCT); return s; }

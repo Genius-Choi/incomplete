@@ -1,4 +1,0 @@
-CSnapIDPool::CSnapIDPool()
-{
-	Reset();
-}

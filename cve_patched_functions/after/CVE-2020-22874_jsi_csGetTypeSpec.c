@@ -1,1 +1,0 @@
-static Jsi_OptionTypedef *jsi_csGetTypeSpec(void* p) { Jsi_OptionTypedef *s = (typeof(s))p; SIGASSERT(s, TYPEDEF); return s; }

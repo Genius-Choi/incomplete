@@ -1,1 +1,0 @@
-int ctrl_x_mode_none(void) { return ctrl_x_mode == 0; }

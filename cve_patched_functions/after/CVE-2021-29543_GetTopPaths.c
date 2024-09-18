@@ -1,1 +1,0 @@
-  inline int GetTopPaths() const { return top_paths_; }

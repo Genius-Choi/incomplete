@@ -1,1 +1,0 @@
-static inline void trace_module_remove_evals(struct module *mod) { }

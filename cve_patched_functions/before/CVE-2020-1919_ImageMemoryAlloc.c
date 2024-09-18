@@ -1,1 +1,0 @@
-  ImageMemoryAlloc() : m_mallocSize(0) {}

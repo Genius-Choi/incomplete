@@ -1,1 +1,0 @@
-Jsi_RC Jsi_CDataStructInit(Jsi_Interp *interp, uchar* data, const char *sname) { return JSI_ERROR; }

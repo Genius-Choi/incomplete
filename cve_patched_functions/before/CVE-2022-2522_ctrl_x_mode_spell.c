@@ -1,1 +1,0 @@
-int ctrl_x_mode_spell(void) { return ctrl_x_mode == CTRL_X_SPELL; }

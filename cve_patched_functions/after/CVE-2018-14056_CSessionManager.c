@@ -1,1 +1,0 @@
-    CSessionManager() : m_mspSessions(24 * 60 * 60 * 1000), m_mIPSessions() {}

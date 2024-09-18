@@ -1,1 +1,0 @@
-Jsi_OptionTypedef *Jsi_TypeLookup(Jsi_Interp *interp, const char *name) { return NULL; }

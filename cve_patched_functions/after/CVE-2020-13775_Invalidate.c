@@ -1,1 +1,0 @@
-void CAuthBase::Invalidate() { m_pSock = nullptr; }

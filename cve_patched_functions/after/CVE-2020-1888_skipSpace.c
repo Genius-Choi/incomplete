@@ -1,1 +1,0 @@
-  void skipSpace() { while (isSpace(*p)) p++; }

@@ -1,1 +1,0 @@
-    TestEnumeration() : i(0) {}

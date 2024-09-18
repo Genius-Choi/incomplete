@@ -1,1 +1,0 @@
-static CServer *CreateServer() { return new CServer(); }

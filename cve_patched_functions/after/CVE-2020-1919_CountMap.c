@@ -1,1 +1,0 @@
-    CountMap() : count(0), wall_time(0), cpu(0), memory(0), peak_memory(0) {}

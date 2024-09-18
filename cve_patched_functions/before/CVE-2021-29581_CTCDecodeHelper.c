@@ -1,1 +1,0 @@
-  CTCDecodeHelper() : top_paths_(1) {}

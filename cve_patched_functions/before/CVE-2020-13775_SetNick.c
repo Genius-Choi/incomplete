@@ -1,1 +1,0 @@
-void CClient::SetNick(const CString& s) { m_sNick = s; }

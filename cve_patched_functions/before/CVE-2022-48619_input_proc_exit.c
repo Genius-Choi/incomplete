@@ -1,1 +1,0 @@
-static inline void input_proc_exit(void) { }

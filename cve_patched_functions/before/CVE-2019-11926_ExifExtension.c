@@ -1,1 +1,0 @@
-  ExifExtension() : Extension("exif", NO_EXTENSION_VERSION_YET) {}
