@@ -9,7 +9,7 @@ import json
 server_endpoint = "localhost:8080"
 client = CPGQLSClient(server_endpoint)
 
-file_path = "/home/youngjaechoi/incomplete_temp/cve_patched_functions/before"
+file_path = "/home/youngjaechoi/incomplete/cve_patched_functions/before"
 
 def process_file(file_name_withex):
     file_name = file_name_withex.split('.')[0]
@@ -57,7 +57,7 @@ def process_file(file_name_withex):
 
     print(f'linenums with Call: {int_line_numbers}')
 
-    with open('./patched_line_num.json', 'r') as f:
+    with open('../json_data/patched_line_num.json', 'r') as f:
         patched_lines = json.load(f)
 
     matched_linenum = patched_lines.get(file_name_withex, [])
@@ -131,5 +131,5 @@ for filename in os.listdir(file_path):
     dep_result = process_file(filename)
     all_results[filename] = dep_result
 
-with open('found_dependency.json', 'w') as f:
+with open('../json_data/found_dependency.json', 'w') as f:
     json.dump(all_results, f, indent=2)
