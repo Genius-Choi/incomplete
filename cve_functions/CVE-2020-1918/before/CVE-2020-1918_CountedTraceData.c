@@ -1,1 +1,0 @@
-    CountedTraceData() : count(0)  { clear(); }

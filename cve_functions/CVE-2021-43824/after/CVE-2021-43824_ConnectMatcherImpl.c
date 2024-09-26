@@ -1,1 +1,0 @@
-  ConnectMatcherImpl(const RequirementRule& rule) : BaseMatcherImpl(rule) {}

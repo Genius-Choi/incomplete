@@ -1,1 +1,0 @@
-    SimpleAppendable &reset() { str.remove(); return *this; }

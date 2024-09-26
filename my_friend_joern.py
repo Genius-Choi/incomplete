@@ -8,8 +8,8 @@ import json
 
 server_endpoint = "localhost:8080"
 client = CPGQLSClient(server_endpoint)
-
 file_path = "/home/youngjaechoi/incomplete/cve_patched_functions/before"
+
 
 def process_file(file_name_withex):
     file_name = file_name_withex.split('.')[0]
@@ -130,6 +130,8 @@ for filename in os.listdir(file_path):
     print(f"Processing file: {filename}")
     dep_result = process_file(filename)
     all_results[filename] = dep_result
+
+    # client.execute('project.close')
 
 with open('../json_data/found_dependency.json', 'w') as f:
     json.dump(all_results, f, indent=2)

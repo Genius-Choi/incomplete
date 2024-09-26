@@ -1,4 +1,0 @@
-PasswdMgr::PasswdMgr()
-{
-    initPasswordMap();
-}

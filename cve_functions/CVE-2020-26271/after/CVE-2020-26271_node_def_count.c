@@ -1,1 +1,0 @@
-  size_t node_def_count() const override { return graph_def_.node().size(); }

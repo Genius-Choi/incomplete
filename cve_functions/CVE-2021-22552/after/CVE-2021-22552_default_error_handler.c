@@ -1,1 +1,0 @@
-void default_error_handler(const char *message) { abort(); }

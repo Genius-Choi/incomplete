@@ -1,1 +1,0 @@
-  RD2(Runtime& plain) : RuntimeDecorator(plain) {}

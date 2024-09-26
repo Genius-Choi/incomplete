@@ -1,1 +1,0 @@
-int ctrl_x_mode_function(void) { return ctrl_x_mode == CTRL_X_FUNCTION; }

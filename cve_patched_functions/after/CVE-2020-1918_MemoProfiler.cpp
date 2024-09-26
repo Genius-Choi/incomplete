@@ -1,1 +1,0 @@
-  explicit MemoProfiler(int /*flags*/) : Profiler(true) {}
