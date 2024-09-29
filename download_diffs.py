@@ -32,9 +32,14 @@ def process_cves(data):
             diff_url = commit['commit_url'] + '.diff'
             file_name = f"commit_{i+1}.diff"
             save_path = os.path.join(cve_dir, file_name)
-            
+
+            # 이미 파일이 존재하는지 확인
+            if os.path.exists(save_path):
+                print(f"File already exists, skipping: {save_path}")
+                continue  # 파일이 이미 있으면 건너뜀
+
             download_diff(diff_url, save_path)
-            time.sleep(0.5)  # To avoid overwhelming the server
+            time.sleep(0.5)  # 서버에 부담을 주지 않기 위해 잠시 대기
 
 def main():
     data = load_cpp_index_commits('cpp_index_commits.json')
