@@ -23,7 +23,7 @@ def create_session_with_retries():
 session = create_session_with_retries()
 
 def is_cpp_file(file_path):
-    cpp_extensions = ('.c', '.cpp', '.cc')
+    cpp_extensions = ('.c', '.cpp', '.cc', '.php', '.py', '.java', '.rb')
     return file_path.lower().endswith(cpp_extensions)
 
 def get_diff_content(commit_url):

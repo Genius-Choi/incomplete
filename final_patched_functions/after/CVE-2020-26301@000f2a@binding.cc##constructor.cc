@@ -1,0 +1,4 @@
+  static inline Nan::Persistent<Function> & constructor() {
+    static Nan::Persistent<Function> my_constructor;
+    return my_constructor;
+  }

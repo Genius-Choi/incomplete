@@ -1,0 +1,23 @@
+int pam_modutil_regain_priv(pam_handle_t *pamh, struct _ykpam_privs *privs) {
+    if ((privs->saved_euid == geteuid()) && (privs->saved_egid == getegid())) {
+        D (privs->debug_file, "Privilges already as requested, pretend it is all right");
+        return 0;
+    }
+
+    if (seteuid(privs->saved_euid) < 0) {
+        D (privs->debug_file, "seteuid: %s", strerror(errno));
+        return -1;
+    }
+
+    if (setegid(privs->saved_egid) < 0) {
+        D (privs->debug_file, "setegid: %s", strerror(errno));
+        return -1;
+    }
+
+    if (setgroups(privs->saved_groups_length, privs->saved_groups) < 0) {
+        D (privs->debug_file, "setgroups: %s", strerror(errno));
+        return -1;
+    }
+
+    return 0;
+}
