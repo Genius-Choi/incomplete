@@ -344,198 +344,14 @@ def save_checkpoint(last_output_path):
     print(f"Checkpoint saved: {last_output_path}")
 
 
-def main():
-
-    last_output_path = load_checkpoint()
-    start_processing = False if last_output_path else True
-    call_count = 0
-
-    cve_folders = os.listdir('new_cve_code_changes')
-    missing_end_line_count = 0
-    for cve_folder in cve_folders:
-        cve_path = os.path.join('new_cve_code_changes', cve_folder)
-        affected_functions = []
-
-        # print(f"\n\nProcessing CVE folder: {cve_folder}")
-
-        diff_files = glob.glob(f'./cve_diffs/{cve_folder}/commit_*.diff')
-        for diff_path in diff_files:
-            # print(f"Processing diff file: {diff_path}")
-            with open(diff_path, 'r') as diff_file:
-                lines = diff_file.readlines()
-
-            file_diffs = []
-            current_file_diff = []
-            for line in lines:
-                if line.startswith('diff --git'):
-                    if current_file_diff:
-                        file_diffs.append(current_file_diff)
-                        current_file_diff = []
-                current_file_diff.append(line)
-            if current_file_diff:
-                file_diffs.append(current_file_diff)
-
-            for file_diff in file_diffs:
-                processing_file = False
-                file_name = ''
-                before_hash = ''
-                after_hash = ''
-                changed_lines_onlyPM = []
-                start_line = None
-                line_count = 0
-
-                for line in file_diff:
-                    if line.startswith('diff --git'):
-                        # 파일 경로
-                        parts = line.strip().split()
-                        if len(parts) >= 3:
-                            a_file = parts[2][2:]  # 'a/...'에서 a/삭제
-                            b_file = parts[3][2:]
-                            file_name = os.path.basename(a_file)
-                            processing_file = True
-
-                    elif processing_file and line.startswith('index'):
-
-                        parts = line.strip().split()
-                        if len(parts) >= 2:
-                            hashes = parts[1].split('..')
-                            if len(hashes) == 2:
-                                before_hash = hashes[0]
-                                after_hash = hashes[1]
-
-                    elif processing_file and line.startswith('@@ '):
-                        match = re.match(r'@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@', line)
-
-                        if match:
-                            before_start = int(match.group(1))
-                            after_start = int(match.group(2))
-                            start_line = before_start  # before 상태의 라인 번호 사용
-                            line_count = 0
-
-                    elif processing_file and start_line is not None:
-                        line_count += 1
-                        if line.startswith('-') and not line.startswith('---'):
-                            # 삭제된 라인
-                            changed_lines_onlyPM.append(start_line + line_count - 1)
-                        elif line.startswith('+') and not line.startswith('+++'):
-                            # 추가된 라인
-                            changed_lines_onlyPM.append(start_line + line_count - 1)
-                        else:
-                            pass
-
-                if not before_hash or not after_hash or not file_name:
-                    continue  # 필요한 정보가 없으면 스킵
-
-                # print(f"Processing file: {file_name}")
-                # print(f"Before hash: {before_hash}, After hash: {after_hash}")
-
-                # before와 after 파일 경로 설정
-                before_file_name = f"{before_hash}_{file_name}"
-                after_file_name = f"{after_hash}_{file_name}"
-
-                before_file_path = os.path.join(cve_path, 'before', before_file_name)
-                after_file_path = os.path.join(cve_path, 'after', after_file_name)
-
-                # 상태별로 반복
-                for state, file_path, hash_pair in [('before', before_file_path, (before_hash, after_hash)), ('after', after_file_path, (before_hash, after_hash))]:
-                    if not os.path.exists(file_path):
-                        print(f"File not found: {file_path}")
-                        continue
-                    # if file_path.rsplit('.', 1)[-1] not in ['c', 'cc', 'cpp']:
-                    #     print(f"Skipping non C/C++ file: {file_path}")
-                    #     continue
-
-                    # print(f"Analyzing file: {file_path}")
-
-                    ctags_output = run_ctags(file_path)
-                    if not ctags_output:
-                        continue
-
-                    functions = []
-                    for line in ctags_output.strip().split('\n'):
-                        func_info = parse_ctag_line(line)
-                        if func_info:
-                            functions.append(func_info)
-
-                    for func in functions:
-                        if 'start_line' in func and 'end_line' in func:
-                            if any(func['start_line'] <= line <= func['end_line'] for line in changed_lines_onlyPM):
-                                # print(f"Function {func['name']} affected by changes.")
-                                # print(f'changed_lineNum -> {changed_lines_onlyPM}')
-                                # print(f"SL: {func['start_line']}, EL: {func['end_line']}")
-                                print(func)
-                                short_hash = hash_pair[0][:3] + hash_pair[1][:3]
-
-                                with open(file_path, 'r') as file:
-                                    lines = file.readlines()
-                                    func_code = ''.join(lines[func['start_line'] - 1:func['end_line']])
-
-                                extension = os.path.splitext(file_path)[-1]
-                                output_dir = f'./final_patched_functions/{state}'
-                                os.makedirs(output_dir, exist_ok=True)
-                                safe_file_name = file_name.replace('/', '$')
-                                safe_func_name = func['name'].replace('/', '')
-                                output_file_name = f"{cve_folder}@{short_hash}@{safe_file_name}##{safe_func_name}{extension}"
-                                output_file_path = os.path.join(output_dir, output_file_name)
-
-                                with open(output_file_path, 'w') as f:
-                                    f.write(func_code)
-                                # print(f"Saved function {func['name']} to {output_file_path}")
-
-                                if last_output_path and not start_processing:
-                                    if output_file_path == last_output_path:
-                                        start_processing = True
-                                    continue
-
-                                if not last_output_path or start_processing:
-                                    # Affected functions management
-                                    if f"{func['name']}@@{state}" not in affected_functions:
-                                        affected_functions.append(f"{func['name']}@@{state}")
-                                        print(f'affected_functions -> {affected_functions}')
-
-                                        # Call help_me_joren and manage checkpointing
-                                        print(f'output_file_path -> {output_file_path}')
-
-                                        if 'belle_sip_messageParser' not in output_file_path:
-                                            help_me_joren(output_file_path)
-
-                                        call_count += 1
-                                        if call_count >= 500:
-                                            save_checkpoint(output_file_path)
-                                            print("Reached 500 calls to help_me_joren. Exiting.")
-                                            sys.exit(0)
-                                        print(call_count)
-
-
-                        else:
-                            missing_end_line_count += 1
-
-        # print(f"CVE {cve_folder} - Affected Functions: {affected_functions}\n")
-
-    print(f"Total missing end lines: {missing_end_line_count}")
-
-if __name__ == "__main__":
-    
-    # if os.path.exists('./found_dependency.json'):
-    #     os.remove('./found_dependency.json')
-    main()
-
-    # 5230 CVEs
-
-
-
-#-----------------------------------changedlinenum_onlyPM추가-----------------------------#
 # def main():
 
-#     # last_output_path = load_checkpoint()
-#     # start_processing = False if last_output_path else True
-#     # call_count = 0
+#     last_output_path = load_checkpoint()
+#     start_processing = False if last_output_path else True
+#     call_count = 0
 
 #     cve_folders = os.listdir('new_cve_code_changes')
 #     missing_end_line_count = 0
-
-#     function_changes = {'before': {}, 'after': {}}
-
 #     for cve_folder in cve_folders:
 #         cve_path = os.path.join('new_cve_code_changes', cve_folder)
 #         affected_functions = []
@@ -662,21 +478,39 @@ if __name__ == "__main__":
 #                                 output_file_name = f"{cve_folder}@{short_hash}@{safe_file_name}##{safe_func_name}{extension}"
 #                                 output_file_path = os.path.join(output_dir, output_file_name)
 
-#                                 # with open(output_file_path, 'w') as f:
-#                                 #     f.write(func_code)
+#                                 with open(output_file_path, 'w') as f:
+#                                     f.write(func_code)
+#                                 # print(f"Saved function {func['name']} to {output_file_path}")
 
-               
-#                                 affected_lines = [line for line in changed_lines_onlyPM if func['start_line'] <= line <= func['end_line']]
-#                                 function_changes[state][output_file_name] = affected_lines
+#                                 if last_output_path and not start_processing:
+#                                     if output_file_path == last_output_path:
+#                                         start_processing = True
+#                                     continue
+
+#                                 if not last_output_path or start_processing:
+#                                     # Affected functions management
+#                                     if f"{func['name']}@@{state}" not in affected_functions:
+#                                         affected_functions.append(f"{func['name']}@@{state}")
+#                                         print(f'affected_functions -> {affected_functions}')
+
+#                                         # Call help_me_joren and manage checkpointing
+#                                         print(f'output_file_path -> {output_file_path}')
+
+#                                         if 'belle_sip_messageParser' not in output_file_path:
+#                                             help_me_joren(output_file_path)
+
+#                                         call_count += 1
+#                                         if call_count >= 500:
+#                                             save_checkpoint(output_file_path)
+#                                             print("Reached 500 calls to help_me_joren. Exiting.")
+#                                             sys.exit(0)
+#                                         print(call_count)
 
 
 #                         else:
 #                             missing_end_line_count += 1
 
 #         # print(f"CVE {cve_folder} - Affected Functions: {affected_functions}\n")
-
-#     with open('function_changes.json', 'w') as json_file:
-#         json.dump(function_changes, json_file)
 
 #     print(f"Total missing end lines: {missing_end_line_count}")
 
@@ -685,3 +519,169 @@ if __name__ == "__main__":
 #     # if os.path.exists('./found_dependency.json'):
 #     #     os.remove('./found_dependency.json')
 #     main()
+
+    # 5230 CVEs
+
+
+
+#-----------------------------------changedlinenum_onlyPM추가-----------------------------#
+def main():
+
+    # last_output_path = load_checkpoint()
+    # start_processing = False if last_output_path else True
+    # call_count = 0
+
+    cve_folders = os.listdir('new_cve_code_changes')
+    missing_end_line_count = 0
+
+    function_changes = {'before': {}, 'after': {}}
+
+    for cve_folder in cve_folders:
+        cve_path = os.path.join('new_cve_code_changes', cve_folder)
+        affected_functions = []
+
+        # print(f"\n\nProcessing CVE folder: {cve_folder}")
+
+        diff_files = glob.glob(f'./cve_diffs/{cve_folder}/commit_*.diff')
+        for diff_path in diff_files:
+            # print(f"Processing diff file: {diff_path}")
+            with open(diff_path, 'r') as diff_file:
+                lines = diff_file.readlines()
+
+            file_diffs = []
+            current_file_diff = []
+            for line in lines:
+                if line.startswith('diff --git'):
+                    if current_file_diff:
+                        file_diffs.append(current_file_diff)
+                        current_file_diff = []
+                current_file_diff.append(line)
+            if current_file_diff:
+                file_diffs.append(current_file_diff)
+
+            for file_diff in file_diffs:
+                processing_file = False
+                file_name = ''
+                before_hash = ''
+                after_hash = ''
+                changed_lines_onlyPM = []
+                start_line = None
+                line_count = 0
+
+                for line in file_diff:
+                    if line.startswith('diff --git'):
+                        # 파일 경로
+                        parts = line.strip().split()
+                        if len(parts) >= 3:
+                            a_file = parts[2][2:]  # 'a/...'에서 a/삭제
+                            b_file = parts[3][2:]
+                            file_name = os.path.basename(a_file)
+                            processing_file = True
+
+                    elif processing_file and line.startswith('index'):
+
+                        parts = line.strip().split()
+                        if len(parts) >= 2:
+                            hashes = parts[1].split('..')
+                            if len(hashes) == 2:
+                                before_hash = hashes[0]
+                                after_hash = hashes[1]
+
+                    elif processing_file and line.startswith('@@ '):
+                        match = re.match(r'@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@', line)
+
+                        if match:
+                            before_start = int(match.group(1))
+                            after_start = int(match.group(2))
+                            start_line = before_start  # before 상태의 라인 번호 사용
+                            line_count = 0
+
+                    elif processing_file and start_line is not None:
+                        line_count += 1
+                        if line.startswith('-') and not line.startswith('---'):
+                            # 삭제된 라인
+                            changed_lines_onlyPM.append(start_line + line_count - 1)
+                        elif line.startswith('+') and not line.startswith('+++'):
+                            # 추가된 라인
+                            changed_lines_onlyPM.append(start_line + line_count - 1)
+                        else:
+                            pass
+
+                if not before_hash or not after_hash or not file_name:
+                    continue  # 필요한 정보가 없으면 스킵
+
+                # print(f"Processing file: {file_name}")
+                # print(f"Before hash: {before_hash}, After hash: {after_hash}")
+
+                # before와 after 파일 경로 설정
+                before_file_name = f"{before_hash}_{file_name}"
+                after_file_name = f"{after_hash}_{file_name}"
+
+                before_file_path = os.path.join(cve_path, 'before', before_file_name)
+                after_file_path = os.path.join(cve_path, 'after', after_file_name)
+
+                # 상태별로 반복
+                for state, file_path, hash_pair in [('before', before_file_path, (before_hash, after_hash)), ('after', after_file_path, (before_hash, after_hash))]:
+                    if not os.path.exists(file_path):
+                        print(f"File not found: {file_path}")
+                        continue
+                    # if file_path.rsplit('.', 1)[-1] not in ['c', 'cc', 'cpp']:
+                    #     print(f"Skipping non C/C++ file: {file_path}")
+                    #     continue
+
+                    # print(f"Analyzing file: {file_path}")
+
+                    ctags_output = run_ctags(file_path)
+                    if not ctags_output:
+                        continue
+
+                    functions = []
+                    for line in ctags_output.strip().split('\n'):
+                        func_info = parse_ctag_line(line)
+                        if func_info:
+                            functions.append(func_info)
+
+                    for func in functions:
+                        if 'start_line' in func and 'end_line' in func:
+                            if any(func['start_line'] <= line <= func['end_line'] for line in changed_lines_onlyPM):
+                                # print(f"Function {func['name']} affected by changes.")
+                                # print(f'changed_lineNum -> {changed_lines_onlyPM}')
+                                # print(f"SL: {func['start_line']}, EL: {func['end_line']}")
+                                print(func)
+                                short_hash = hash_pair[0][:3] + hash_pair[1][:3]
+
+                                with open(file_path, 'r') as file:
+                                    lines = file.readlines()
+                                    func_code = ''.join(lines[func['start_line'] - 1:func['end_line']])
+
+                                extension = os.path.splitext(file_path)[-1]
+                                output_dir = f'./final_patched_functions/{state}'
+                                os.makedirs(output_dir, exist_ok=True)
+                                safe_file_name = file_name.replace('/', '$')
+                                safe_func_name = func['name'].replace('/', '')
+                                output_file_name = f"{cve_folder}@{short_hash}@{safe_file_name}##{safe_func_name}{extension}"
+                                output_file_path = os.path.join(output_dir, output_file_name)
+
+                                # with open(output_file_path, 'w') as f:
+                                #     f.write(func_code)
+
+               
+                                affected_lines = [line for line in changed_lines_onlyPM if func['start_line'] <= line <= func['end_line']]
+                                function_changes[state][output_file_name] = affected_lines
+
+
+                        else:
+                            missing_end_line_count += 1
+
+        # print(f"CVE {cve_folder} - Affected Functions: {affected_functions}\n")
+
+    with open('function_changes.json', 'w') as json_file:
+        json.dump(function_changes, json_file)
+
+    print(f"Total missing end lines: {missing_end_line_count}")
+
+if __name__ == "__main__":
+    
+    # if os.path.exists('./found_dependency.json'):
+    #     os.remove('./found_dependency.json')
+    main()
